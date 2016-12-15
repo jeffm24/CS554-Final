@@ -1,0 +1,372 @@
+html {
+    height: 100%;
+}
+
+body {
+    padding-top: 70px;
+    height: 100%;
+    background-color: #39393c; /*#303032;*/
+    color: rgb(230,230,230);
+    text-shadow: 0px 1px 1px rgba(0,0,0,0.5);
+    font-family: 'Droid Sans';
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+small {
+    color: #a2a2a2 !important;
+}
+
+.rc-anchor-alert {
+    display: none !important;
+}
+
+::-moz-selection {
+    color: orange;
+}
+::selection {
+    color: orange;
+}
+
+/* overriding bootstrap styling */
+.btn-primary, .btn-primary:focus, .btn-primary:active:focus {
+    background-color: #17ac7e !important;
+    border: none;
+    box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
+    text-shadow: 0px 1px 3px rgba(0,0,0,0.5);
+    color: white;
+}
+.btn-primary:hover, .btn-primary.active:hover {
+    background-color: #01875e !important;
+}
+.btn-primary:active, .btn-primary.active {
+    /*background-color: #1ce2a5;*/
+    background-color: #01875e !important;
+    -webkit-box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.75);
+    box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.75);
+}
+
+/* Negative styling for primary buttons */
+.btn-primary.negative, .btn-primary.negative:focus, .btn-primary.negative:active:focus {
+    background-color: #ED4337 !important;
+    border: none;
+    box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
+    text-shadow: 0px 1px 1px rgba(0,0,0,0.5);
+}
+.btn-primary.negative:hover, .btn-primary.negative.active:hover {
+    background-color: #d22014 !important;
+}
+.btn-primary.negative:active, .btn-primary.negative.active {
+    background-color: #d22014 !important;
+    -webkit-box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.75);
+    box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.75);
+}
+
+.btn:focus,.btn:active {
+   outline: none !important;
+}
+
+/* overriding jquery styling */
+.ui-autocomplete {
+    background: lightgrey;
+    color: white;
+    border: none !important;
+    border-radius: 2px;
+    box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
+    padding: 0px !important;
+    max-height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    z-index: 9999 !important;
+}
+.ui-autocomplete.source:hover {
+    background: #17ac7e;
+}
+
+.ui-menu .ui-menu-item a{
+    background: lightgrey;
+    border-radius: 0px;
+    border: none;
+    margin: 0px;
+}
+.ui-menu .ui-menu-item a:hover{
+    background: #17ac7e;
+    color: white;
+}
+
+/*
+ * -----------------------------------------------------------------
+ * Nav Styling
+ * -----------------------------------------------------------------
+ */
+
+.navbar-right * {
+    text-align: right;
+}
+
+#signOutBtn {
+    float: right;
+    margin: 5px 10px;
+}
+
+.nav-icon {
+    padding: 0px;
+    margin-top: -9px;
+    margin-right: 10px;
+    width: 25px;
+}
+
+/*
+ * -----------------------------------------------------------------
+ * Login/Register Page Styling
+ * -----------------------------------------------------------------
+ */
+
+.panel-login-container {
+    position: relative;
+    top: 10%;
+}
+
+.panel-login {
+	border-color: #ccc;
+	-webkit-box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.2);
+	-moz-box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.2);
+	box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.2);
+    background-color: #212124;
+    border: none;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
+}
+.panel-login>.panel-heading {
+	color: #00415d;
+	text-align:center;
+}
+.panel-login>.panel-heading a{
+	text-decoration: none;
+	color: #666;
+	font-weight: bold;
+	font-size: 15px;
+	-webkit-transition: all 0.1s linear;
+	-moz-transition: all 0.1s linear;
+	transition: all 0.1s linear;
+}
+.panel-login>.panel-heading a.active{
+	color: #17ac7e;
+	font-size: 18px;
+}
+.panel-login>.panel-heading hr{
+	margin-top: 10px;
+	margin-bottom: 0px;
+	clear: both;
+	border: 0;
+	height: 1px;
+    background-color: rgba(230,230,230, 0.8);
+}
+.panel-login input[type="text"],.panel-login input[type="email"],.panel-login input[type="password"] {
+	height: 45px;
+	border: 1px solid #ddd;
+	font-size: 16px;
+	-webkit-transition: all 0.1s linear;
+	-moz-transition: all 0.1s linear;
+	transition: all 0.1s linear;
+}
+.panel-login input:hover,
+.panel-login input:focus {
+	outline:none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	border-color: #ccc;
+}
+
+/*
+ * -----------------------------------------------------------------
+ * Portfolio Page Styling
+ * -----------------------------------------------------------------
+ */
+
+/* searchBar affix styling */
+.affix#searchBar {
+    top:0;
+    left: 50%;
+    width:  40%;
+    margin-top: 8px;
+    margin-left: -20%; /* Half of the width */
+    z-index: 9999 !important;
+}
+.navbar {
+    margin-bottom: 0px;
+}
+.affix ~ .container {
+   position: relative;
+   top: 50px;
+}
+
+#searchBtn {
+    height: 34px;
+}
+
+/*
+ *  -----------------------------------------------------------------
+ *  Ticker Item styling
+ *  -----------------------------------------------------------------
+ */
+
+ #saveTickerBtn {
+     padding: 5px 10px;
+     margin-top: -4px;
+     margin-bottom: -10px;
+ }
+
+ .refresh-ticker-btn {
+     margin-top: -6px;
+ }
+
+ .remove-ticker-btn {
+     margin-top: 10px;
+ }
+
+.tickerItem {
+    background-color: #212124;
+    border: none;
+    box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
+    margin: 10px 0px !important;
+    padding: 7px;
+}
+
+.change-percent.positive {
+    color: #17ac7e;
+}
+.change-percent.negative {
+    color: #ED4337;
+}
+
+.tickerItem.positive:hover {
+    box-shadow: 0px 0px 10px #17ac7e;
+}
+.tickerItem.negative:hover {
+    box-shadow: 0px 0px 10px #ED4337;
+}
+
+.tickerItem > .panel-heading {
+    background-color: rgba(0,0,0,0);
+    color: lightgrey;
+    border: none;
+}
+
+.tickerItem > a {
+    text-decoration: none;
+    color: lightgrey;
+}
+
+.sub-panel {
+    background-color: #303032;
+    border-radius: 3px;
+    box-shadow: 0px 1px 1px rgba(50,50,50,0.8);
+    margin: 10px 2px;
+    padding: 10px;
+}
+
+.stat-panel, .graph-panel{
+    padding-left: 25px;
+    padding-right: 25px;
+    height: 30em;
+}
+
+
+.stat-item {
+    margin: 10px 0px;
+}
+
+.stat-item > * {
+    margin: 0px;
+}
+
+
+.stat-val {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.stat-name {
+    font-size: 1em;
+    color: #a2a2a2;
+}
+
+path {
+    stroke-width: 3;
+    fill: none;
+}
+.tickerItem.positive path {
+    stroke: #17ac7e;
+}
+.tickerItem.negative path {
+    stroke: #ED4337;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+.stock {
+	color: white
+}
+.price {
+  font-size: 3em;
+}
+
+
+.d3-wrapper {
+  height: 70%;
+}
+
+svg {
+  height: 100%;
+  width: 100%;
+}
+
+/*.d3-wrapper {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    vertical-align: top;
+    overflow: hidden;
+}
+.svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+}*/
+
+/*
+ *  -----------------------------------------------------------------
+ *  Edit Profile Page styling
+ *  -----------------------------------------------------------------
+ */
+
+#edit-profile-panel {
+    background-color: #212124;
+    border: none;
+    box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
+    margin: 10px 0px !important;
+    padding: 7px;
+    color: white;
+}
+#edit-profile-panel > * {
+    background-color: #212124;
+    color: white;
+}
+
+@media screen and (max-width:767px) {
+    .affix#searchBar {
+        left: 60%;
+    }
+}
