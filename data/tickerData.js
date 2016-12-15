@@ -14,7 +14,7 @@ MongoClient.connect(fullMongoUrl)
         var converter = new Converter({});
 
         // Populate tickers collection
-        converter.fromFile("./static/csv/tickers.csv", function (err, tickers) {
+        converter.fromFile(__dirname + "/../public/csv/tickers.csv", function (err, tickers) {
             if (tickers) {
                 for (ticker of tickers) {
                     tickerCollection.update({symbol: ticker.Symbol}, {$set: {symbol: ticker.Symbol, name: ticker.Name, exchange: ticker.Exchange}}, {upsert: true});

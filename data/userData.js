@@ -1,6 +1,6 @@
 var MongoClient = require('mongodb').MongoClient,
     settings = require('./config.js'),
-    Guid = require('guid'),
+    uuid = require('node-uuid'),
     bcrypt = require('bcrypt-nodejs');
 
 var fullMongoUrl = settings.mongoConfig.serverUrl + settings.mongoConfig.database;
@@ -36,7 +36,7 @@ MongoClient.connect(fullMongoUrl)
                     return bcrypt.hash(password, null, null, function(err, hash) {
                         // Store hash in your password DB.
                         return usersCollection.insertOne({
-                            _id: Guid.create().toString(),
+                            _id: uuid.v4(),
                             username: username,
                             encryptedPassword: hash,
                             currentSessionId: "",
@@ -90,7 +90,7 @@ MongoClient.connect(fullMongoUrl)
                     // Compare hash of given password to hash in the db
                     if (bcrypt.compareSync(password, user.encryptedPassword)) {
                         // Login success: Create a new session ID for the user and update the user in the database
-                        var sessionID = Guid.create().toString();
+                        var sessionID = uuid.v4();
 
                         return usersCollection.update({"username": username}, {$set: {"currentSessionId": sessionID, "logInAttempts": null, "lockOutStamp": null}}).then(function() {
                             return Promise.resolve(sessionID);
