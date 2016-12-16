@@ -84,7 +84,6 @@ const LoginForm = React.createClass({
         this.setState({registerInfo: newRegisterInfo});
     },
     isViewActive(view) {
-        //console.log(view);
         return (this.state.activeView === view) ? 'active' : '';
     },
     isFormHidden(view) {
