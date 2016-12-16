@@ -283,8 +283,6 @@ var LoginForm = React.createClass({
         );
     }
 });
-
-ReactDOM.render(React.createElement(LoginForm, { url: '/' }), document.getElementById('content'));
 "use strict";
 
 var Profile = React.createClass({
