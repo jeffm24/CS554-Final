@@ -15,15 +15,19 @@ const Wrapper = React.createClass({
     },
     render() {
         let mainComponent = null;
+
         if(this.state.loggedIn){
             mainComponent = <Profile/>
         }else{
-            mainComponent = <LoginForm loginFunc={this.onLogin.bind(this)} url="/"/>
+            mainComponent = <LoginForm loginFunc={this.onLogin.bind(this)} />
         }
 
         return (
             <div>
-                {mainComponent}
+                <Nav loggedIn={this.state.loggedIn} />
+                <div className="container">
+                    {mainComponent}
+                </div>
             </div>
         );
     }

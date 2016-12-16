@@ -19,6 +19,7 @@ const Search = React.createClass({
                 success: function (data) {
                     if (data) {
                         console.log("it's in data")
+                        console.log(data);
                         var listOfSymbols = [];
 
                         for (ticker of data.suggestions) {
