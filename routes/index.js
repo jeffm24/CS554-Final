@@ -50,8 +50,7 @@ const constructorMethod = (app) => {
         if (response.locals.user) {
             response.redirect('/profile');
         } else {
-            response.render("home", {});
-            response.render('pages/signInUp', {pageTitle: 'Sign In/Register'});
+            response.render('sign_in', {});
         }
 
     })

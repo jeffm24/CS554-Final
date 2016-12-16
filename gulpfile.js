@@ -9,7 +9,16 @@ const babel = require("gulp-babel");
 const cssFiles = "./public/css/source/**/*.css";
 const sassFiles = "./public/css/source/sass/**/*.scss";
 const jsxFiles = "./public/js/source/components/**/*.js";
-const vendorFiles = ["./public/js/vendor/**/*.js"];
+const vendorFiles = [
+    "./public/js/vendor/jquery.min.js",
+    "./public/js/vendor/jquery-ui.min.js",
+    "./public/js/vendor/bootstrap.min.js",
+    "./public/js/vendor/react.min.js",
+    "./public/js/vendor/react-dom.min.js",
+    "./public/js/vendor/d3.min.js",
+    "./public/js/vendor/sweetalert.min.js",
+    "./public/js/vendor/ubique.min.js"
+];
 
 gulp.task("sass", () => {
     gulp

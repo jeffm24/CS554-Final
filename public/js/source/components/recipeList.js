@@ -43,4 +43,4 @@ const RecipeList = React.createClass({
     }
 });
 
-ReactDOM.render(<RecipeList url="/recipes"/>, document.getElementById('content'));
+//ReactDOM.render(<RecipeList url="/recipes"/>, document.getElementById('content'));
