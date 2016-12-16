@@ -43,6 +43,8 @@ var LoginForm = React.createClass({
         });
     },
     submitLoginForm: function submitLoginForm(e) {
+        var _this = this;
+
         e.preventDefault();
 
         $.ajax({
@@ -51,18 +53,16 @@ var LoginForm = React.createClass({
             data: {
                 username: this.state.loginInfo.username,
                 password: this.state.loginInfo.password
-            },
-            success: function success(data) {
-                location.reload();
-            },
-            error: function error(xhr, status, _error2) {
-                swal({
-                    title: "Error!",
-                    text: xhr.responseJSON.error,
-                    type: "error",
-                    confirmButtonText: "OK"
-                });
             }
+        }).done(function (data) {
+            _this.props.loginFunc();
+        }).fail(function (xhr, status, error) {
+            swal({
+                title: "Error!",
+                text: xhr.responseJSON.error,
+                type: "error",
+                confirmButtonText: "OK"
+            });
         });
 
         this.resetState();
@@ -95,7 +95,7 @@ var LoginForm = React.createClass({
         this.setState({ activeView: view });
     },
     render: function render() {
-        var _this = this;
+        var _this2 = this;
 
         return React.createElement(
             'div',
@@ -118,7 +118,7 @@ var LoginForm = React.createClass({
                                 React.createElement(
                                     'a',
                                     { href: '#', className: this.isViewActive('login'), onClick: function onClick() {
-                                            _this.setActiveView('login');
+                                            _this2.setActiveView('login');
                                         } },
                                     'Login'
                                 )
@@ -129,7 +129,7 @@ var LoginForm = React.createClass({
                                 React.createElement(
                                     'a',
                                     { href: '#', className: this.isViewActive('register'), onClick: function onClick() {
-                                            _this.setActiveView('register');
+                                            _this2.setActiveView('register');
                                         } },
                                     'Register'
                                 )
@@ -611,12 +611,23 @@ var RecipeList = React.createClass({
 
 var Wrapper = React.createClass({
     displayName: "Wrapper",
+    getInitialState: function getInitialState() {
+        return { loggedIn: false };
+    },
+    onLogin: function onLogin() {
+        this.setState({ loggedIn: true });
+    },
     render: function render() {
+        var mainComponent = null;
+        if (this.state.loggedIn) {
+            mainComponent = React.createElement(Profile, null);
+        } else {
+            mainComponent = React.createElement(LoginForm, { loginFunc: this.onLogin.bind(this), url: "/" });
+        }
         return React.createElement(
             "div",
             null,
-            React.createElement(LoginForm, { url: "/" }),
-            React.createElement(Profile, null)
+            mainComponent
         );
     }
 });
