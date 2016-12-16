@@ -99,22 +99,22 @@ var LoginForm = React.createClass({
 
         return React.createElement(
             'div',
-            { 'class': 'row' },
+            { className: 'row' },
             React.createElement(
                 'div',
-                { 'class': 'col-md-6 col-md-offset-3', id: 'sign-in-content' },
+                { className: 'col-md-6 col-md-offset-3', id: 'sign-in-content' },
                 React.createElement(
                     'div',
-                    { 'class': 'panel panel-login' },
+                    { className: 'panel panel-login' },
                     React.createElement(
                         'div',
-                        { 'class': 'panel-heading' },
+                        { className: 'panel-heading' },
                         React.createElement(
                             'div',
-                            { 'class': 'row' },
+                            { className: 'row' },
                             React.createElement(
                                 'div',
-                                { 'class': 'col-xs-6' },
+                                { className: 'col-xs-6' },
                                 React.createElement(
                                     'a',
                                     { href: '#', className: this.isViewActive('login'), onClick: function onClick() {
@@ -125,7 +125,7 @@ var LoginForm = React.createClass({
                             ),
                             React.createElement(
                                 'div',
-                                { 'class': 'col-xs-6' },
+                                { className: 'col-xs-6' },
                                 React.createElement(
                                     'a',
                                     { href: '#', className: this.isViewActive('register'), onClick: function onClick() {
@@ -139,22 +139,22 @@ var LoginForm = React.createClass({
                     ),
                     React.createElement(
                         'div',
-                        { 'class': 'panel-body' },
+                        { className: 'panel-body' },
                         React.createElement(
                             'div',
-                            { 'class': 'row' },
+                            { className: 'row' },
                             React.createElement(
                                 'div',
-                                { 'class': 'col-lg-12' },
+                                { className: 'col-lg-12' },
                                 React.createElement(
                                     'form',
                                     { id: 'login-form', className: this.isFormHidden('login'), onSubmit: this.submitLoginForm },
                                     React.createElement(
                                         'div',
-                                        { 'class': 'form-group' },
+                                        { className: 'form-group' },
                                         React.createElement(
                                             'label',
-                                            { 'class': 'hidden', 'for': 'login-username' },
+                                            { className: 'hidden', 'for': 'login-username' },
                                             'Username'
                                         ),
                                         React.createElement('input', {
@@ -162,17 +162,17 @@ var LoginForm = React.createClass({
                                             name: 'login-username',
                                             id: 'login-username',
                                             tabindex: '1',
-                                            'class': 'form-control',
+                                            className: 'form-control',
                                             placeholder: 'Username',
                                             onChange: this.changeLoginInfo,
                                             value: this.state.loginInfo.username })
                                     ),
                                     React.createElement(
                                         'div',
-                                        { 'class': 'form-group' },
+                                        { className: 'form-group' },
                                         React.createElement(
                                             'label',
-                                            { 'class': 'hidden', 'for': 'login-password' },
+                                            { className: 'hidden', 'for': 'login-password' },
                                             'Password'
                                         ),
                                         React.createElement('input', {
@@ -180,21 +180,21 @@ var LoginForm = React.createClass({
                                             name: 'login-password',
                                             id: 'login-password',
                                             tabindex: '2',
-                                            'class': 'form-control',
+                                            className: 'form-control',
                                             placeholder: 'Password',
                                             onChange: this.changeLoginInfo,
                                             value: this.state.loginInfo.password })
                                     ),
                                     React.createElement(
                                         'div',
-                                        { 'class': 'form-group' },
+                                        { className: 'form-group' },
                                         React.createElement(
                                             'div',
-                                            { 'class': 'row' },
+                                            { className: 'row' },
                                             React.createElement(
                                                 'div',
-                                                { 'class': 'col-sm-6 col-sm-offset-3' },
-                                                React.createElement('input', { type: 'submit', name: 'login-submit', id: 'login-submit', tabindex: '4', 'class': 'form-control btn btn-primary', value: 'Log In' })
+                                                { className: 'col-sm-6 col-sm-offset-3' },
+                                                React.createElement('input', { type: 'submit', name: 'login-submit', id: 'login-submit', tabindex: '4', className: 'form-control btn btn-primary', value: 'Log In' })
                                             )
                                         )
                                     )
@@ -204,10 +204,10 @@ var LoginForm = React.createClass({
                                     { id: 'register-form', className: this.isFormHidden('register'), onSubmit: this.submitRegisterForm },
                                     React.createElement(
                                         'div',
-                                        { 'class': 'form-group' },
+                                        { className: 'form-group' },
                                         React.createElement(
                                             'label',
-                                            { 'class': 'hidden', 'for': 'register-username' },
+                                            { className: 'hidden', 'for': 'register-username' },
                                             'Username'
                                         ),
                                         React.createElement('input', {
@@ -215,17 +215,17 @@ var LoginForm = React.createClass({
                                             name: 'register-username',
                                             id: 'register-username',
                                             tabindex: '1',
-                                            'class': 'form-control',
+                                            className: 'form-control',
                                             placeholder: 'Username',
                                             onChange: this.changeRegisterInfo,
                                             value: this.state.registerInfo.username })
                                     ),
                                     React.createElement(
                                         'div',
-                                        { 'class': 'form-group' },
+                                        { className: 'form-group' },
                                         React.createElement(
                                             'label',
-                                            { 'class': 'hidden', 'for': 'register-password' },
+                                            { className: 'hidden', 'for': 'register-password' },
                                             'Password'
                                         ),
                                         React.createElement('input', {
@@ -233,17 +233,17 @@ var LoginForm = React.createClass({
                                             name: 'register-password',
                                             id: 'register-password',
                                             tabindex: '2',
-                                            'class': 'form-control',
+                                            className: 'form-control',
                                             placeholder: 'Password',
                                             onChange: this.changeRegisterInfo,
                                             value: this.state.registerInfo.password })
                                     ),
                                     React.createElement(
                                         'div',
-                                        { 'class': 'form-group' },
+                                        { className: 'form-group' },
                                         React.createElement(
                                             'label',
-                                            { 'class': 'hidden', 'for': 'register-confirm-password' },
+                                            { className: 'hidden', 'for': 'register-confirm-password' },
                                             'Confirm Password'
                                         ),
                                         React.createElement('input', {
@@ -251,26 +251,26 @@ var LoginForm = React.createClass({
                                             name: 'register-confirm-password',
                                             id: 'register-confirm-password',
                                             tabindex: '2',
-                                            'class': 'form-control',
+                                            className: 'form-control',
                                             placeholder: 'Confirm Password',
                                             onChange: this.changeRegisterInfo,
                                             value: this.state.registerInfo.confirmPassword })
                                     ),
                                     React.createElement(
                                         'div',
-                                        { 'class': 'form-group' },
-                                        React.createElement('div', { 'class': 'g-recaptcha', 'data-sitekey': '6LfHNh8TAAAAAJeYQyoVxYu9o1iL3o1Lvm3e4SUh', style: { 'transform': 'scale(0.77)', '-webkit-transform': 'scale(0.77)', 'transform-origin': '0 0', '-webkit-transform-origin': '0 0' } })
+                                        { className: 'form-group' },
+                                        React.createElement('div', { className: 'g-recaptcha', 'data-sitekey': '6LfHNh8TAAAAAJeYQyoVxYu9o1iL3o1Lvm3e4SUh', style: { 'transform': 'scale(0.77)', '-webkit-transform': 'scale(0.77)', 'transform-origin': '0 0', '-webkit-transform-origin': '0 0' } })
                                     ),
                                     React.createElement(
                                         'div',
-                                        { 'class': 'form-group' },
+                                        { className: 'form-group' },
                                         React.createElement(
                                             'div',
-                                            { 'class': 'row' },
+                                            { className: 'row' },
                                             React.createElement(
                                                 'div',
-                                                { 'class': 'col-sm-6 col-sm-offset-3' },
-                                                React.createElement('input', { type: 'submit', name: 'register-submit', id: 'register-submit', tabindex: '4', 'class': 'form-control btn btn-primary', value: 'Register' })
+                                                { className: 'col-sm-6 col-sm-offset-3' },
+                                                React.createElement('input', { type: 'submit', name: 'register-submit', id: 'register-submit', tabindex: '4', className: 'form-control btn btn-primary', value: 'Register' })
                                             )
                                         )
                                     )
