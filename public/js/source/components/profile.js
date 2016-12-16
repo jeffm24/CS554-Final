@@ -7,5 +7,3 @@ const Profile = React.createClass({
         );
     }
 });
-
-ReactDOM.render(<Profile/>, document.getElementById('profile-component'));
