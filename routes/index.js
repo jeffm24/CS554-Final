@@ -135,15 +135,11 @@ const constructorMethod = (app) => {
         // Only run addUser function if the user is not currently logged in
         if (!response.locals.user) {
 
-            if (response.locals.recaptcha) {
-                userData.addUser(request.body.username, request.body.password, request.body.confirm).then(function(val) {
-                    response.json({status: request.body.username + " successfully added. Please try logging in."});
-                }, function(errorMessage) {
-                    response.status(500).json({ error: errorMessage });
-                });
-            } else {
-                response.status(500).json({error: "Please validate with the recaptcha before submitting."});
-            }
+            userData.addUser(request.body.username, request.body.password, request.body.confirm).then(function(val) {
+                response.json({status: request.body.username + " successfully added. Please try logging in."});
+            }, function(errorMessage) {
+                response.status(500).json({ error: errorMessage });
+            });
 
         } else {
             response.status(500).json({error: "User already signed in."});
@@ -398,6 +394,7 @@ const constructorMethod = (app) => {
     app.use("*", (req, res) => {
         response.render('home', {});
     });
+
 };
 
 module.exports = constructorMethod;
