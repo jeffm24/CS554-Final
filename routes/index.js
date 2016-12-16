@@ -6,8 +6,6 @@ const userData = data.userData;
 const tickerData = data.tickerData;
 const historicalData = data.historicalData;
 
-const RECAP_KEY = "6LfHNh8TAAAAANSdnXIWVwkPXMrj50ClhnkqBSD_";    //recaptcha secret key MOVE THIS
-
 const constructorMethod = (app) => {
     // Middleware for checking if the user is logged in
     app.use(function(request, response, next) {
@@ -42,56 +40,26 @@ const constructorMethod = (app) => {
 
     });
 
-
-    // Redirects to "/profile" or renders the sign in/sign up page depending on whether the user is logged in or not
-    app.get("/", function(request, response) {
-
-        // If the user is logged in, redirect to '/profile', otherwise render the signIn/signUp page
-        if (response.locals.user) {
-            response.redirect('/profile');
-        } else {
-            response.render('sign_in', {});
-        }
-
-    })
-
     // Display the user profile if they are logged in, otherwise redirect to "/"
-    app.get("/profile", function(request, response) {
+    app.get("/profileTickers", function(request, response) {
 
         // If the user is logged in, render the profile page, otherwise redirect to '/'
         if (response.locals.user) {
             var user = response.locals.user;
 
             tickerData.getMultTickerInfo(user.savedTickers).then(function(tickers) {
-                response.render('pages/profile', {
-                    pageTitle: 'Portfolio',
+                response.json({
                     username: user.username,
                     tickers: tickers
                 });
+            }, function(errorMessage) {
+                response.status(500).json({error: errorMessage});
             });
 
         } else {
-            response.redirect('/');
+            response.status(403).json({error: 'Please login first.'});
         }
 
-    });
-
-    // Route for the Edit Account Info page
-    app.get("/account", function(request, response){
-    // If the user is logged in, render the profile page, otherwise redirect to '/'
-    if (response.locals.user) {
-        var user = response.locals.user;
-
-        response.render('pages/editAccount', {
-            pageTitle: 'Edit Account',
-            username: user.username,
-            firstName: user.profile.firstName,
-            lastName: user.profile.lastName,
-            occupation: user.profile.occupation
-        });
-    } else {
-        response.redirect('/');
-    }
     });
 
     // Route for getting ticker suggestions based on a given search
@@ -428,7 +396,7 @@ const constructorMethod = (app) => {
     });
     
     app.use("*", (req, res) => {
-        res.redirect("/");
+        response.render('home', {});
     });
 };
 
