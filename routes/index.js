@@ -21,6 +21,10 @@ const constructorMethod = (app) => {
         });
     });
 
+    app.get('/', function(request, response) {
+        response.render('home', {});
+    })
+
     // Display the user profile if they are logged in, otherwise redirect to "/"
     app.get("/profileTickers", function(request, response) {
 
