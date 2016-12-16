@@ -20,8 +20,6 @@ const LoginForm = React.createClass({
                 confirm: this.state.registerInfo.confirmPassword
             },
             success: function(data) {
-                grecaptcha.reset();
-
                 swal({
                     title: "Success!",
                     text: data.status,
