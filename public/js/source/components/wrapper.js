@@ -2,6 +2,14 @@ const Wrapper = React.createClass({
     getInitialState() {
         return { loggedIn: false};
     },
+    componentDidMount() {
+        $.ajax({
+            url: '/checkLoginStatus',
+            type: 'GET'
+        }).done((data) => {
+            this.setState({ loggedIn: data.loggedIn });
+        });
+    },
     onLogin() {
         this.setState({ loggedIn: true });
     },
@@ -12,6 +20,7 @@ const Wrapper = React.createClass({
         }else{
             mainComponent = <LoginForm loginFunc={this.onLogin.bind(this)} url="/"/>
         }
+
         return (
             <div>
                 {mainComponent}

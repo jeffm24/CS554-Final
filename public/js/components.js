@@ -467,12 +467,22 @@ var RecipeList = React.createClass({
 });
 
 //ReactDOM.render(<RecipeList url="/recipes"/>, document.getElementById('content'));
-"use strict";
+'use strict';
 
 var Wrapper = React.createClass({
-    displayName: "Wrapper",
+    displayName: 'Wrapper',
     getInitialState: function getInitialState() {
         return { loggedIn: false };
+    },
+    componentDidMount: function componentDidMount() {
+        var _this = this;
+
+        $.ajax({
+            url: '/checkLoginStatus',
+            type: 'GET'
+        }).done(function (data) {
+            _this.setState({ loggedIn: data.loggedIn });
+        });
     },
     onLogin: function onLogin() {
         this.setState({ loggedIn: true });
@@ -482,10 +492,11 @@ var Wrapper = React.createClass({
         if (this.state.loggedIn) {
             mainComponent = React.createElement(Profile, null);
         } else {
-            mainComponent = React.createElement(LoginForm, { loginFunc: this.onLogin.bind(this), url: "/" });
+            mainComponent = React.createElement(LoginForm, { loginFunc: this.onLogin.bind(this), url: '/' });
         }
+
         return React.createElement(
-            "div",
+            'div',
             null,
             mainComponent
         );

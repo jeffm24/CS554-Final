@@ -23,6 +23,17 @@ const constructorMethod = (app) => {
 
     app.get('/', function(request, response) {
         response.render('home', {});
+    });
+
+    app.get('/checkLoginStatus', (req, res) => {
+        userData.getUserBySessionID(req.cookies.sessionID).then(function(user) {
+            // If the user is logged in, set response.locals.user to the user
+            if (user) {
+                res.status(200).json({loggedIn:true});
+            } else {
+                res.status(200).json({loggedIn:false});
+            }
+        });
     })
 
     // Display the user profile if they are logged in, otherwise redirect to "/"
