@@ -42,7 +42,6 @@ const constructorMethod = (app) => {
 
     });
 
-
     // Redirects to "/profile" or renders the sign in/sign up page depending on whether the user is logged in or not
     app.get("/", function(request, response) {
 
@@ -78,20 +77,20 @@ const constructorMethod = (app) => {
 
     // Route for the Edit Account Info page
     app.get("/account", function(request, response){
-    // If the user is logged in, render the profile page, otherwise redirect to '/'
-    if (response.locals.user) {
-        var user = response.locals.user;
+        // If the user is logged in, render the profile page, otherwise redirect to '/'
+        if (response.locals.user) {
+            var user = response.locals.user;
 
-        response.render('pages/editAccount', {
-            pageTitle: 'Edit Account',
-            username: user.username,
-            firstName: user.profile.firstName,
-            lastName: user.profile.lastName,
-            occupation: user.profile.occupation
-        });
-    } else {
-        response.redirect('/');
-    }
+            response.render('pages/editAccount', {
+                pageTitle: 'Edit Account',
+                username: user.username,
+                firstName: user.profile.firstName,
+                lastName: user.profile.lastName,
+                occupation: user.profile.occupation
+            });
+        } else {
+            response.redirect('/');
+        }
     });
 
     // Route for getting ticker suggestions based on a given search
@@ -167,15 +166,11 @@ const constructorMethod = (app) => {
         // Only run addUser function if the user is not currently logged in
         if (!response.locals.user) {
 
-            if (response.locals.recaptcha) {
-                userData.addUser(request.body.username, request.body.password, request.body.confirm).then(function(val) {
-                    response.json({status: request.body.username + " successfully added. Please try logging in."});
-                }, function(errorMessage) {
-                    response.status(500).json({ error: errorMessage });
-                });
-            } else {
-                response.status(500).json({error: "Please validate with the recaptcha before submitting."});
-            }
+            userData.addUser(request.body.username, request.body.password, request.body.confirm).then(function(val) {
+                response.json({status: request.body.username + " successfully added. Please try logging in."});
+            }, function(errorMessage) {
+                response.status(500).json({ error: errorMessage });
+            });
 
         } else {
             response.status(500).json({error: "User already signed in."});
@@ -430,6 +425,7 @@ const constructorMethod = (app) => {
     app.use("*", (req, res) => {
         res.redirect("/");
     });
+
 };
 
 module.exports = constructorMethod;

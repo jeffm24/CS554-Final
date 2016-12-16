@@ -19,8 +19,7 @@ var LoginForm = React.createClass({
             data: {
                 username: this.state.registerInfo.username,
                 password: this.state.registerInfo.password,
-                confirm: this.state.registerInfo.confirmPassword,
-                recaptchaResponse: grecaptcha.getResponse()
+                confirm: this.state.registerInfo.confirmPassword
             },
             success: function success(data) {
                 grecaptcha.reset();

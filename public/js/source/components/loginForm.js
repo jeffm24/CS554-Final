@@ -10,14 +10,14 @@ const LoginForm = React.createClass({
 
         var self = this;
 
+
         $.ajax({
             url: '/register',
             type: 'POST',
             data: {
                 username: this.state.registerInfo.username,
                 password: this.state.registerInfo.password,
-                confirm: this.state.registerInfo.confirmPassword,
-                recaptchaResponse: grecaptcha.getResponse()
+                confirm: this.state.registerInfo.confirmPassword
             },
             success: function(data) {
                 grecaptcha.reset();
