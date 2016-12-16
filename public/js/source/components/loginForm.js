@@ -10,7 +10,6 @@ const LoginForm = React.createClass({
 
         var self = this;
 
-
         $.ajax({
             url: '/register',
             type: 'POST',
@@ -50,18 +49,16 @@ const LoginForm = React.createClass({
             data: {
                 username: this.state.loginInfo.username,
                 password: this.state.loginInfo.password
-            },
-            success: function(data) {
-                location.reload();
-            },
-            error: function(xhr, status, error) {
-                swal({
-                    title: "Error!",
-                    text: xhr.responseJSON.error,
-                    type: "error",
-                    confirmButtonText: "OK"
-                });
             }
+        }).done((data) => {
+            this.props.loginFunc();
+        }).fail((xhr, status, error) => {
+            swal({
+                title: "Error!",
+                text: xhr.responseJSON.error,
+                type: "error",
+                confirmButtonText: "OK"
+            });
         });
 
         this.resetState();
