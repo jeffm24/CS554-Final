@@ -15,6 +15,7 @@ const vendorFiles = [
     "./public/js/vendor/bootstrap.min.js",
     "./public/js/vendor/react.min.js",
     "./public/js/vendor/react-dom.min.js",
+    "./public/js/vendor/react-router.min.js",
     "./public/js/vendor/d3.min.js",
     "./public/js/vendor/sweetalert.min.js",
     "./public/js/vendor/ubique.min.js"
