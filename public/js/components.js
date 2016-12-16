@@ -295,6 +295,146 @@ var Profile = React.createClass({
                 "p",
                 null,
                 "Profile"
+            ),
+            React.createElement(Search, null)
+        );
+    }
+});
+"use strict";
+
+var Search = React.createClass({
+    displayName: "Search",
+    getInitialState: function getInitialState() {
+        return { searchInfo: ''};
+    },
+    resetState: function resetState() {
+        this.setState({ searchInfo: ''});
+    },
+    changeSearchInfo: function changeSearchInfo(e) {
+        var newSearchInfo = $('#searchBarInput').val();
+
+        this.setState({ searchInfo: newSearchInfo });
+    },
+    dynamicSearchSuggest: function dynamicSearchSuggest(e) {
+        console.log('fire');
+        if ($('#searchBarInput').val()) {
+            $.ajax({
+                url: '/getTickerSearchSuggestions?ticker=' + $('#searchBarInput').val(),
+                type: 'GET',
+                success: function (data) {
+                    if (data) {
+                        console.log("it's in data")
+                        var listOfSymbols = [];
+
+                        for (ticker of data.suggestions) {
+                            listOfSymbols.push(ticker.symbol);
+                        }
+
+                        console.log(listOfSymbols.toString());
+                        $('#searchBarInput').autocomplete({
+                            source: listOfSymbols
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr.responseText + ' (' + xhr.status + ')');
+                }
+            });
+        }
+    },
+    submitSearchForm: function submitSearchForm(e) {
+        $.ajax({
+            url: '/search',
+            type: 'PUT',
+            data: {
+                search: $('#searchBarInput').val().toUpperCase()
+            },
+            success: function (data) {
+                if (data.notFound) {
+                    swal({
+                        title: "Error!",
+                        text: data.result,
+                        type: "error",
+                        confirmButtonText: "OK"
+                    });
+                } else {
+
+                    // Create the render data object to be passed to the renderer
+                    var renderData = {
+                        tickerSymbol: data.result.symbol,
+                        changeInPercent: data.result.ChangeinPercent,
+                        open: data.result.Open,
+                        todayHigh: data.result.DaysHigh,
+                        todayLow: data.result.DaysLow,
+                        wkHigh: data.result.YearHigh,
+                        wkLow: data.result.YearLow,
+                        volume: data.result.Volume,
+                        avgVolume: data.result.AverageDailyVolume,
+                        marketCap: data.result.MarketCapitalization,
+                        peRatio: data.result.PERatio,
+                        divYield: data.result.DividendYield,
+                        change: data.result.change,
+                        userSavedTickers: data.result.userSavedTickers
+                    };
+
+                    // Get the contents of the searchTickerItem ejs file to pass to the renderer
+                    $.ajax({
+                        url: '/assets/templates/searchTickerItem.ejs',
+                        type: 'GET',
+                        success: function (searchTickerItemEJS) {
+
+                            // Render the searchTickerItem and insert it
+                            var html = ejs.render(searchTickerItemEJS, renderData);
+                            $('#searchResult').html(html);
+                            makeGraph(data.result.symbol, "Search");
+
+                        }
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                swal({
+                    title: "Error!",
+                    text: xhr.responseJSON.error,
+                    type: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        });
+
+        return false;    
+    },
+    render: function render() {
+        return React.createElement(
+            "div",
+            {classname: 'search'},
+            React.createElement(
+                "div",
+                { className: 'page-header' },
+                React.createElement(
+                    "h2",
+                    null,
+                    "Search: "
+                )
+            ),
+            React.createElement(
+                "form",
+                {id: 'searchForm'},
+                React.createElement(
+                    "div",
+                    {classname: 'input-group', id: 'searchBar'/*, 'data-spy': 'affix'*/ },
+                    React.createElement("label", {classname: 'hidden', 'for': 'searchBarInput'}, "Enter Search Here "),
+                    React.createElement("input", {type: 'text', id: 'searchBarInput', name: 'searchBarInput', classname: 'form-control', placeholder: 'Search Tickers', onChange: this.dynamicSearchSuggest/*, value: this.state.searchInfo*/ }),
+                    React.createElement(
+                        "span",
+                        {classname: 'input-group-btn'},
+                        React.createElement("button", {classname: 'btn btn-primary', id: 'searchBtn', type: 'submit'}, "Go!")
+                    )
+                )
+            ),
+            React.createElement(
+                "div",
+                {id: 'searchResult'}
             )
         );
     }
