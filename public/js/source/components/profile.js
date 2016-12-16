@@ -3,7 +3,8 @@ const Profile = React.createClass({
         return (
             <div>
                 <p>Profile</p>
-                <Search></Search>
+                <Search/>
+                <TickerList/>
             </div>
         );
     }
