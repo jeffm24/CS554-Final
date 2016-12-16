@@ -45,12 +45,7 @@ const constructorMethod = (app) => {
     // Redirects to "/profile" or renders the sign in/sign up page depending on whether the user is logged in or not
     app.get("/", function(request, response) {
 
-        // If the user is logged in, redirect to '/profile', otherwise render the signIn/signUp page
-        if (response.locals.user) {
-            response.redirect('/profile');
-        } else {
-            response.render('sign_in', {});
-        }
+        response.render('sign_in', {});
 
     })
 
