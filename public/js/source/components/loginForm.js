@@ -198,5 +198,3 @@ const LoginForm = React.createClass({
         );
     }
 });
-
-ReactDOM.render(<LoginForm url="/"/>, document.getElementById('sign-in-content'));

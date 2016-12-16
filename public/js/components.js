@@ -275,27 +275,22 @@ var LoginForm = React.createClass({
         );
     }
 });
-
-ReactDOM.render(React.createElement(LoginForm, { url: '/' }), document.getElementById('sign-in-content'));
 "use strict";
-'use strict';
 
 var Profile = React.createClass({
-    displayName: 'Profile',
+    displayName: "Profile",
     render: function render() {
         return React.createElement(
-            'div',
+            "div",
             null,
             React.createElement(
-                'p',
+                "p",
                 null,
-                'Profile'
+                "Profile"
             )
         );
     }
 });
-
-ReactDOM.render(React.createElement(Profile, null), document.getElementById('profile-component'));
 "use strict";
 
 var Recipe = React.createClass({
@@ -643,3 +638,18 @@ var RecipeList = React.createClass({
 });
 
 //ReactDOM.render(<RecipeList url="/recipes"/>, document.getElementById('content'));
+"use strict";
+
+var Wrapper = React.createClass({
+    displayName: "Wrapper",
+    render: function render() {
+        return React.createElement(
+            "div",
+            null,
+            React.createElement(LoginForm, { url: "/" }),
+            React.createElement(Profile, null)
+        );
+    }
+});
+
+ReactDOM.render(React.createElement(Wrapper, null), document.getElementById('stock-app'));
