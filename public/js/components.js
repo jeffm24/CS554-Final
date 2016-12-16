@@ -43,6 +43,8 @@ var LoginForm = React.createClass({
         });
     },
     submitLoginForm: function submitLoginForm(e) {
+        var _this = this;
+
         e.preventDefault();
 
         $.ajax({
@@ -51,18 +53,16 @@ var LoginForm = React.createClass({
             data: {
                 username: this.state.loginInfo.username,
                 password: this.state.loginInfo.password
-            },
-            success: function success(data) {
-                location.reload();
-            },
-            error: function error(xhr, status, _error2) {
-                swal({
-                    title: "Error!",
-                    text: xhr.responseJSON.error,
-                    type: "error",
-                    confirmButtonText: "OK"
-                });
             }
+        }).done(function (data) {
+            _this.props.loginFunc();
+        }).fail(function (xhr, status, error) {
+            swal({
+                title: "Error!",
+                text: xhr.responseJSON.error,
+                type: "error",
+                confirmButtonText: "OK"
+            });
         });
 
         this.resetState();
@@ -95,7 +95,7 @@ var LoginForm = React.createClass({
         this.setState({ activeView: view });
     },
     render: function render() {
-        var _this = this;
+        var _this2 = this;
 
         return React.createElement(
             'div',
@@ -118,7 +118,7 @@ var LoginForm = React.createClass({
                                 React.createElement(
                                     'a',
                                     { href: '#', className: this.isViewActive('login'), onClick: function onClick() {
-                                            _this.setActiveView('login');
+                                            _this2.setActiveView('login');
                                         } },
                                     'Login'
                                 )
@@ -129,7 +129,7 @@ var LoginForm = React.createClass({
                                 React.createElement(
                                     'a',
                                     { href: '#', className: this.isViewActive('register'), onClick: function onClick() {
-                                            _this.setActiveView('register');
+                                            _this2.setActiveView('register');
                                         } },
                                     'Register'
                                 )
@@ -295,7 +295,8 @@ var Profile = React.createClass({
                 "p",
                 null,
                 "Profile"
-            )
+            ),
+            React.createElement(Search, null)
         );
     }
 });
@@ -467,16 +468,202 @@ var RecipeList = React.createClass({
 });
 
 //ReactDOM.render(<RecipeList url="/recipes"/>, document.getElementById('content'));
-"use strict";
+'use strict';
 
-var Wrapper = React.createClass({
-    displayName: "Wrapper",
+var Search = React.createClass({
+    displayName: 'Search',
+    getInitialState: function getInitialState() {
+        return { searchInfo: '' };
+    },
+    resetState: function resetState() {
+        this.setState({ searchInfo: '' });
+    },
+    changeSearchInfo: function changeSearchInfo(e) {
+        var newSearchInfo = $('#searchBarInput').val();
+
+        this.setState({ searchInfo: newSearchInfo });
+    },
+    dynamicSearchSuggest: function dynamicSearchSuggest(e) {
+        console.log('fire');
+        if ($('#searchBarInput').val()) {
+            $.ajax({
+                url: '/getTickerSearchSuggestions?ticker=' + $('#searchBarInput').val(),
+                type: 'GET',
+                success: function success(data) {
+                    if (data) {
+                        console.log("it's in data");
+                        var listOfSymbols = [];
+
+                        var _iteratorNormalCompletion = true;
+                        var _didIteratorError = false;
+                        var _iteratorError = undefined;
+
+                        try {
+                            for (var _iterator = data.suggestions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                ticker = _step.value;
+
+                                listOfSymbols.push(ticker.symbol);
+                            }
+                        } catch (err) {
+                            _didIteratorError = true;
+                            _iteratorError = err;
+                        } finally {
+                            try {
+                                if (!_iteratorNormalCompletion && _iterator.return) {
+                                    _iterator.return();
+                                }
+                            } finally {
+                                if (_didIteratorError) {
+                                    throw _iteratorError;
+                                }
+                            }
+                        }
+
+                        console.log(listOfSymbols.toString());
+                        $('#searchBarInput').autocomplete({
+                            source: listOfSymbols
+                        });
+                    }
+                },
+                error: function error(xhr, status, _error) {
+                    console.log(xhr.responseText + ' (' + xhr.status + ')');
+                }
+            });
+        }
+    },
+    submitSearchForm: function submitSearchForm(e) {
+        $.ajax({
+            url: '/search',
+            type: 'PUT',
+            data: {
+                search: $('#searchBarInput').val().toUpperCase()
+            },
+            success: function success(data) {
+                if (data.notFound) {
+                    swal({
+                        title: "Error!",
+                        text: data.result,
+                        type: "error",
+                        confirmButtonText: "OK"
+                    });
+                } else {
+
+                    // Create the render data object to be passed to the renderer
+                    var renderData = {
+                        tickerSymbol: data.result.symbol,
+                        changeInPercent: data.result.ChangeinPercent,
+                        open: data.result.Open,
+                        todayHigh: data.result.DaysHigh,
+                        todayLow: data.result.DaysLow,
+                        wkHigh: data.result.YearHigh,
+                        wkLow: data.result.YearLow,
+                        volume: data.result.Volume,
+                        avgVolume: data.result.AverageDailyVolume,
+                        marketCap: data.result.MarketCapitalization,
+                        peRatio: data.result.PERatio,
+                        divYield: data.result.DividendYield,
+                        change: data.result.change,
+                        userSavedTickers: data.result.userSavedTickers
+                    };
+
+                    // Get the contents of the searchTickerItem ejs file to pass to the renderer
+                    $.ajax({
+                        url: '/assets/templates/searchTickerItem.ejs',
+                        type: 'GET',
+                        success: function success(searchTickerItemEJS) {
+
+                            // Render the searchTickerItem and insert it
+                            var html = ejs.render(searchTickerItemEJS, renderData);
+                            $('#searchResult').html(html);
+                            makeGraph(data.result.symbol, "Search");
+                        }
+                    });
+                }
+            },
+            error: function error(xhr, status, _error2) {
+                swal({
+                    title: "Error!",
+                    text: xhr.responseJSON.error,
+                    type: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        });
+
+        return false;
+    },
     render: function render() {
         return React.createElement(
-            "div",
+            'div',
+            { className: 'search' },
+            React.createElement(
+                'div',
+                { className: 'page-header' },
+                React.createElement(
+                    'h2',
+                    null,
+                    'Search: '
+                )
+            ),
+            React.createElement(
+                'form',
+                { id: 'searchForm' },
+                React.createElement(
+                    'div',
+                    { id: 'searchBar', className: 'input-group', 'data-spy': 'affix' },
+                    React.createElement(
+                        'label',
+                        { className: 'hidden', 'for': 'searchBarInput' },
+                        ' Enter Search Here: '
+                    ),
+                    React.createElement('input', { type: 'text', id: 'searchBarInput', name: 'searchBarInput', className: 'form-control', placeholder: 'Search Tickers', onChange: this.dynamicSearchSuggest }),
+                    React.createElement(
+                        'span',
+                        { className: 'input-group-btn' },
+                        React.createElement(
+                            'button',
+                            { type: 'submit', className: 'btn btn-primary', id: 'searchBtn' },
+                            'Go!'
+                        )
+                    )
+                )
+            ),
+            React.createElement('div', { id: 'searchResult' })
+        );
+    }
+});
+'use strict';
+
+var Wrapper = React.createClass({
+    displayName: 'Wrapper',
+    getInitialState: function getInitialState() {
+        return { loggedIn: false };
+    },
+    componentDidMount: function componentDidMount() {
+        var _this = this;
+
+        $.ajax({
+            url: '/checkLoginStatus',
+            type: 'GET'
+        }).done(function (data) {
+            _this.setState({ loggedIn: data.loggedIn });
+        });
+    },
+    onLogin: function onLogin() {
+        this.setState({ loggedIn: true });
+    },
+    render: function render() {
+        var mainComponent = null;
+        if (this.state.loggedIn) {
+            mainComponent = React.createElement(Profile, null);
+        } else {
+            mainComponent = React.createElement(LoginForm, { loginFunc: this.onLogin.bind(this), url: '/' });
+        }
+
+        return React.createElement(
+            'div',
             null,
-            React.createElement(LoginForm, { url: "/" }),
-            React.createElement(Profile, null)
+            mainComponent
         );
     }
 });
