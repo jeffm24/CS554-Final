@@ -101,7 +101,7 @@ var LoginForm = React.createClass({
             { className: 'row' },
             React.createElement(
                 'div',
-                { className: 'col-md-6 col-md-offset-3', id: 'sign-in-content' },
+                { className: 'col-md-6 col-md-offset-3' },
                 React.createElement(
                     'div',
                     { className: 'panel panel-login' },
@@ -327,16 +327,6 @@ var Nav = React.createClass({
                                 'li',
                                 null,
                                 React.createElement(
-                                    'a',
-                                    { href: '/account' },
-                                    'Edit Account'
-                                )
-                            ),
-                            React.createElement('li', { role: 'separator', className: 'divider' }),
-                            React.createElement(
-                                'li',
-                                null,
-                                React.createElement(
                                     'button',
                                     { id: 'signOutBtn', type: 'button', className: 'btn btn-danger', onClick: this.signOut },
                                     'Sign Out'
@@ -385,21 +375,71 @@ var Nav = React.createClass({
         );
     }
 });
-"use strict";
+'use strict';
 
 var Profile = React.createClass({
-    displayName: "Profile",
+    displayName: 'Profile',
+    getInitialState: function getInitialState() {
+        return { userTickers: [] };
+    },
+    addTicker: function addTicker(newTicker) {
+        var tickerExists = this.state.userTickers.filter(function (ticker) {
+            return ticker.symbol === newTicker.symbol;
+        }).length;
+
+        if (!tickerExists) {
+            this.setState({ userTickers: this.state.userTickers.concat([newTicker]) });
+        }
+    },
+    updateTicker: function updateTicker(symbol, newData) {
+        var tickers = this.state.userTickers.map(function (ticker) {
+            if (ticker.symbol === symbol) {
+                return newData;
+            } else {
+                return ticker;
+            }
+        });
+
+        this.setState({ userTickers: tickers });
+    },
+    removeTicker: function removeTicker(symbol) {
+        var tickers = this.state.userTickers.filter(function (ticker) {
+            return ticker.symbol !== symbol;
+        });
+
+        this.setState({ userTickers: tickers });
+    },
+    getTickers: function getTickers() {
+        var tickers = this.state.userTickers;
+
+        return tickers;
+    },
+    componentDidMount: function componentDidMount() {
+        var _this = this;
+
+        $.ajax({
+            url: '/profileTickers',
+            dataType: 'json',
+            cache: false,
+            success: function success(tickerList) {
+                _this.setState({ userTickers: tickerList.tickers });
+            },
+            error: function error(xhr, status, err) {
+                console.error('/tickerList', status, err.toString());
+            }
+        });
+    },
     render: function render() {
         return React.createElement(
-            "div",
+            'div',
             null,
-            React.createElement(
-                "p",
-                null,
-                "Profile"
-            ),
-            React.createElement(Search, null),
-            React.createElement(TickerList, null)
+            React.createElement(Search, {
+                userTickers: this.getTickers.bind(this),
+                addTicker: this.addTicker.bind(this) }),
+            React.createElement(TickerList, {
+                userTickers: this.getTickers.bind(this),
+                updateTicker: this.updateTicker.bind(this),
+                removeTicker: this.removeTicker.bind(this) })
         );
     }
 });
@@ -458,26 +498,19 @@ var RecipeList = React.createClass({
 var Search = React.createClass({
     displayName: 'Search',
     getInitialState: function getInitialState() {
-        return { searchInfo: '' };
+        return { searchTicker: null };
     },
     resetState: function resetState() {
-        this.setState({ searchInfo: '' });
-    },
-    changeSearchInfo: function changeSearchInfo(e) {
-        var newSearchInfo = $('#searchBarInput').val();
-
-        this.setState({ searchInfo: newSearchInfo });
+        this.setState({ searchTicker: null });
     },
     dynamicSearchSuggest: function dynamicSearchSuggest(e) {
-        console.log('fire');
-        if ($('#searchBarInput').val()) {
+        if (e.target.value) {
+
             $.ajax({
-                url: '/getTickerSearchSuggestions?ticker=' + $('#searchBarInput').val(),
+                url: '/getTickerSearchSuggestions?ticker=' + e.target.value,
                 type: 'GET',
                 success: function success(data) {
                     if (data) {
-                        console.log("it's in data");
-                        console.log(data);
                         var listOfSymbols = [];
 
                         var _iteratorNormalCompletion = true;
@@ -486,7 +519,7 @@ var Search = React.createClass({
 
                         try {
                             for (var _iterator = data.suggestions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                                ticker = _step.value;
+                                var ticker = _step.value;
 
                                 listOfSymbols.push(ticker.symbol);
                             }
@@ -505,7 +538,6 @@ var Search = React.createClass({
                             }
                         }
 
-                        console.log(listOfSymbols.toString());
                         $('#searchBarInput').autocomplete({
                             source: listOfSymbols
                         });
@@ -518,6 +550,10 @@ var Search = React.createClass({
         }
     },
     submitSearchForm: function submitSearchForm(e) {
+        e.preventDefault();
+
+        var self = this;
+
         $.ajax({
             url: '/search',
             type: 'PUT',
@@ -526,6 +562,7 @@ var Search = React.createClass({
             },
             success: function success(data) {
                 if (data.notFound) {
+
                     swal({
                         title: "Error!",
                         text: data.result,
@@ -534,36 +571,7 @@ var Search = React.createClass({
                     });
                 } else {
 
-                    // Create the render data object to be passed to the renderer
-                    var renderData = {
-                        tickerSymbol: data.result.symbol,
-                        changeInPercent: data.result.ChangeinPercent,
-                        open: data.result.Open,
-                        todayHigh: data.result.DaysHigh,
-                        todayLow: data.result.DaysLow,
-                        wkHigh: data.result.YearHigh,
-                        wkLow: data.result.YearLow,
-                        volume: data.result.Volume,
-                        avgVolume: data.result.AverageDailyVolume,
-                        marketCap: data.result.MarketCapitalization,
-                        peRatio: data.result.PERatio,
-                        divYield: data.result.DividendYield,
-                        change: data.result.change,
-                        userSavedTickers: data.result.userSavedTickers
-                    };
-
-                    // Get the contents of the searchTickerItem ejs file to pass to the renderer
-                    $.ajax({
-                        url: '/assets/templates/searchTickerItem.ejs',
-                        type: 'GET',
-                        success: function success(searchTickerItemEJS) {
-
-                            // Render the searchTickerItem and insert it
-                            var html = ejs.render(searchTickerItemEJS, renderData);
-                            $('#searchResult').html(html);
-                            makeGraph(data.result.symbol, "Search");
-                        }
-                    });
+                    self.setState({ searchTicker: data.result });
                 }
             },
             error: function error(xhr, status, _error2) {
@@ -575,10 +583,20 @@ var Search = React.createClass({
                 });
             }
         });
-
-        return false;
+    },
+    componentDidMount: function componentDidMount() {
+        this.setState({ scrollTop: $('#searchBar').offset().top });
     },
     render: function render() {
+        var searchTicker = null;
+
+        if (this.state.searchTicker) {
+            searchTicker = React.createElement(Ticker, {
+                tickerData: this.state.searchTicker,
+                userTickers: this.props.userTickers.bind(this),
+                addTicker: this.props.addTicker.bind(this) });
+        }
+
         return React.createElement(
             'div',
             { className: 'search' },
@@ -593,10 +611,10 @@ var Search = React.createClass({
             ),
             React.createElement(
                 'form',
-                { id: 'searchForm' },
+                { id: 'searchForm', onSubmit: this.submitSearchForm },
                 React.createElement(
                     'div',
-                    { id: 'searchBar', className: 'input-group', 'data-spy': 'affix' },
+                    { id: 'searchBar', className: 'input-group', 'data-spy': 'affix', 'data-offset-top': this.state.scrollTop },
                     React.createElement(
                         'label',
                         { className: 'hidden', 'for': 'searchBarInput' },
@@ -614,7 +632,11 @@ var Search = React.createClass({
                     )
                 )
             ),
-            React.createElement('div', { id: 'searchResult' })
+            React.createElement(
+                'div',
+                { id: 'searchResult' },
+                searchTicker
+            )
         );
     }
 });
@@ -622,12 +644,13 @@ var Search = React.createClass({
 
 var Ticker = React.createClass({
     displayName: 'Ticker',
-
     getInitialState: function getInitialState() {
         return {};
     },
     saveTicker: function saveTicker() {
         if (this.props.saved) return;
+
+        var self = this;
 
         $.ajax({
             url: '/saveTicker',
@@ -636,7 +659,7 @@ var Ticker = React.createClass({
                 symbol: this.props.tickerData.symbol
             },
             success: function success(data) {
-                // ADD TICKER TO PARENT SAVED TICKER LIST
+                self.props.addTicker(self.props.tickerData);
                 // ADD TICKER SYMBOL TO CACHE
             },
             error: function error(xhr, status, _error) {
@@ -652,14 +675,16 @@ var Ticker = React.createClass({
     removeTicker: function removeTicker() {
         if (!this.props.saved) return;
 
+        var self = this;
+
         $.ajax({
             url: '/removeTicker',
             type: 'DELETE',
             data: {
-                symbol: $(event.target).data('symbol')
+                symbol: this.props.tickerData.symbol
             },
             success: function success(data) {
-                // REMOVE TICKER FROM PARENT SAVED TICKER LIST
+                self.props.removeTicker(self.props.tickerData.symbol);
                 //removeFromCache($(event.target).data('symbol'));
             },
             error: function error(xhr, status, _error2) {
@@ -696,7 +721,7 @@ var Ticker = React.createClass({
                                 'span',
                                 { className: "change-percent " + this.props.tickerData.change },
                                 '(',
-                                this.props.tickerData.ChangeInPercent,
+                                this.props.tickerData.ChangeinPercent,
                                 ')'
                             )
                         )
@@ -723,7 +748,8 @@ var Ticker = React.createClass({
                                 { className: 'col-xs-12 col-sm-6' },
                                 React.createElement(TickerStats, {
                                     saved: 'true',
-                                    tickerData: this.props.tickerData })
+                                    tickerData: this.props.tickerData,
+                                    updateTicker: this.props.updateTicker.bind(this) })
                             )
                         ),
                         React.createElement(
@@ -738,12 +764,19 @@ var Ticker = React.createClass({
         } else {
             // Search ticker
 
-            var addTickerBtn = null;
+            var self = this;
 
-            if (this.props.userSavedTickers && this.props.userSavedTickers.indexOf(this.props.tickerData.symbol) === -1) {
+            var addTickerBtn = null;
+            var userTickers = this.props.userTickers();
+
+            var tickerExists = userTickers.filter(function (ticker) {
+                return ticker.symbol === self.props.tickerData.symbol;
+            }).length;
+
+            if (!tickerExists) {
                 addTickerBtn = React.createElement(
                     'span',
-                    { className: 'pull-right' },
+                    null,
                     React.createElement(
                         'label',
                         { className: 'hidden', 'for': 'saveTickerBtn' },
@@ -753,7 +786,7 @@ var Ticker = React.createClass({
                     ),
                     React.createElement(
                         'button',
-                        { type: 'button', id: 'saveTickerBtn', className: 'btn btn-primary', onClick: this.saveTicker },
+                        { type: 'button', id: 'saveTickerBtn', className: 'btn btn-primary pull-right', onClick: this.saveTicker },
                         React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' })
                     ),
                     React.createElement('div', { className: 'clearfix' })
@@ -775,7 +808,7 @@ var Ticker = React.createClass({
                             'span',
                             { className: "change-percent " + this.props.tickerData.change },
                             '(',
-                            this.props.tickerData.ChangeInPercent,
+                            this.props.tickerData.ChangeinPercent,
                             ')'
                         )
                     ),
@@ -1074,58 +1107,42 @@ var TickerGraph = React.createClass({
         );
     }
 });
-'use strict';
+"use strict";
 
 var TickerList = React.createClass({
-    displayName: 'TickerList',
+    displayName: "TickerList",
 
     getInitialState: function getInitialState() {
-        return { tickers: [] };
-    },
-    addTicker: function addTicker(newTicker) {
-        var tickers = this.state.tickers.concat([newTicker]);
-
-        this.setState({ tickers: tickers });
-    },
-    componentDidMount: function componentDidMount() {
-        var _this = this;
-
-        $.ajax({
-            url: '/profileTickers',
-            dataType: 'json',
-            cache: false,
-            success: function success(tickerList) {
-                _this.setState({ tickers: tickerList.tickers });
-            },
-            error: function error(xhr, status, err) {
-                console.error('/tickerList', status, err.toString());
-            }
-        });
+        return {};
     },
     render: function render() {
+        var _this = this;
 
-        var tickerList = this.state.tickers;
+        var tickerList = this.props.userTickers();
         var tickers = tickerList.map(function (ticker) {
             return React.createElement(Ticker, {
                 tickerData: ticker,
-                saved: 'true' });
+                userTickers: _this.props.userTickers.bind(_this),
+                updateTicker: _this.props.updateTicker.bind(_this),
+                removeTicker: _this.props.removeTicker.bind(_this),
+                saved: "true" });
         });
 
         return React.createElement(
-            'div',
+            "div",
             null,
             React.createElement(
-                'div',
-                { className: 'page-header' },
+                "div",
+                { className: "page-header" },
                 React.createElement(
-                    'h2',
+                    "h2",
                     null,
-                    'My Tickers: '
+                    "My Tickers: "
                 )
             ),
             React.createElement(
-                'div',
-                { className: 'panel-group', id: 'accordion' },
+                "div",
+                { className: "panel-group", id: "accordion" },
                 tickers
             )
         );
@@ -1137,7 +1154,6 @@ var TickerList = React.createClass({
 
 var TickerStats = React.createClass({
     displayName: 'TickerStats',
-
     getInitialState: function getInitialState() {
         return { refreshRunning: false, tickerData: this.props.tickerData };
     },
@@ -1145,30 +1161,25 @@ var TickerStats = React.createClass({
         this.setState({ refreshRunning: true });
         this.updateTicker($(this).data('symbol'), true);
     },
-    updateTicker: function updateTicker(tickerSymbol, showSuccessAlert) {
+    updateTicker: function updateTicker() {
         var self = this;
 
         $.ajax({
             url: '/updateTicker',
             type: 'PUT',
             data: {
-                symbol: tickerSymbol
+                symbol: this.state.tickerData.symbol
             },
             success: function success(data) {
-                // Create the render data object to be passed to the renderer
-                this.setState({ tickerData: data.result });
-
-                // Display success message to the user
-                if (showSuccessAlert) {
-                    swal({
-                        title: "Success!",
-                        text: renderData.tickerSymbol + " is now up to date.",
-                        type: "success",
-                        confirmButtonText: "OK"
-                    });
-                }
-
+                self.props.updateTicker(self.state.tickerData.symbol, data.result);
                 self.setState({ refreshRunning: false });
+
+                swal({
+                    title: "Success!",
+                    text: self.state.tickerData.symbol + " is now up to date.",
+                    type: "success",
+                    confirmButtonText: "OK"
+                });
             },
             error: function error(xhr, status, _error) {
                 swal({
@@ -1179,9 +1190,6 @@ var TickerStats = React.createClass({
                 });
             }
         });
-    },
-    isRefreshDisabled: function isRefreshDisabled() {
-        return this.state.refreshRunning ? 'true' : 'false';
     },
     render: function render() {
         var refreshButton = null;
@@ -1199,7 +1207,12 @@ var TickerStats = React.createClass({
                 ),
                 React.createElement(
                     'button',
-                    { type: 'button', id: "refresh-" + this.state.tickerData.symbol, className: 'btn btn-primary refresh-ticker-btn', 'data-symbol': this.state.tickerData.symbol, disabled: isRefreshDisabled },
+                    {
+                        type: 'button',
+                        id: "refresh-" + this.state.tickerData.symbol,
+                        className: 'btn btn-primary refresh-ticker-btn',
+                        disabled: this.state.refreshRunning,
+                        onClick: this.updateTicker },
                     React.createElement('span', { className: 'glyphicon glyphicon-refresh', 'aria-hidden': 'true' })
                 )
             );

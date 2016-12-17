@@ -92,7 +92,7 @@ const LoginForm = React.createClass({
     render() {
         return (
             <div className="row">
-                <div className="col-md-6 col-md-offset-3" id="sign-in-content">
+                <div className="col-md-6 col-md-offset-3">
                     <div className="panel panel-login">
                         <div className="panel-heading">
                             <div className="row">

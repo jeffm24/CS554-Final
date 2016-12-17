@@ -1,3 +1,6 @@
+$positiveHighlight: #17ac7e;
+$negativeHighlight: #ED4337;
+
 html {
     height: 100%;
 }
@@ -12,6 +15,15 @@ body {
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+path {
+    stroke-width: 3;
+    fill: none;
+}
+svg {
+    height: 100%;
+    width: 100%;
 }
 
 small {
@@ -31,17 +43,19 @@ small {
 
 /* overriding bootstrap styling */
 .btn-primary, .btn-primary:focus, .btn-primary:active:focus {
-    background-color: #17ac7e !important;
+    background-image: none;
+    background-color: $positiveHighlight !important;
     border: none;
     box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
     text-shadow: 0px 1px 3px rgba(0,0,0,0.5);
     color: white;
 }
 .btn-primary:hover, .btn-primary.active:hover {
+    background-image: none;
     background-color: #01875e !important;
 }
 .btn-primary:active, .btn-primary.active {
-    /*background-color: #1ce2a5;*/
+    background-image: none;
     background-color: #01875e !important;
     -webkit-box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.75);
     -moz-box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.75);
@@ -50,15 +64,18 @@ small {
 
 /* Negative styling for primary buttons */
 .btn-primary.negative, .btn-primary.negative:focus, .btn-primary.negative:active:focus {
-    background-color: #ED4337 !important;
+    background-image: none;
+    background-color: $negativeHighlight !important;
     border: none;
     box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
     text-shadow: 0px 1px 1px rgba(0,0,0,0.5);
 }
 .btn-primary.negative:hover, .btn-primary.negative.active:hover {
+    background-image: none;
     background-color: #d22014 !important;
 }
 .btn-primary.negative:active, .btn-primary.negative.active {
+    background-image: none;
     background-color: #d22014 !important;
     -webkit-box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.75);
     -moz-box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.75);
@@ -71,7 +88,7 @@ small {
 
 /* overriding jquery styling */
 .ui-autocomplete {
-    background: lightgrey;
+    background: #222 !important;;
     color: white;
     border: none !important;
     border-radius: 2px;
@@ -81,20 +98,22 @@ small {
     overflow-y: scroll;
     overflow-x: hidden;
     z-index: 9999 !important;
-}
-.ui-autocomplete.source:hover {
-    background: #17ac7e;
-}
 
-.ui-menu .ui-menu-item a{
-    background: lightgrey;
-    border-radius: 0px;
-    border: none;
-    margin: 0px;
-}
-.ui-menu .ui-menu-item a:hover{
-    background: #17ac7e;
-    color: white;
+    &.source:hover {
+        background: $positiveHighlight;
+    }
+
+    .ui-menu .ui-menu-item {
+        border-radius: 0px;
+        border: none;
+        margin: 0px;
+        padding: 8px;
+
+        &:hover {
+            background: $positiveHighlight;
+            color: white;
+        }   
+    }
 }
 
 /*
@@ -103,32 +122,31 @@ small {
  * -----------------------------------------------------------------
  */
 
-.navbar-right * {
-    text-align: right;
+.navbar {
+
+    .nav-icon {
+        padding: 0px;
+        margin-top: -9px;
+        margin-right: 10px;
+        width: 25px;
+    }
+
+    .dropdown-menu {
+        padding: 5px;
+        
+        #signOutBtn {
+            width: 100%;
+            text-align: center;
+        }
+    }
 }
 
-#signOutBtn {
-    float: right;
-    margin: 5px 10px;
-}
-
-.nav-icon {
-    padding: 0px;
-    margin-top: -9px;
-    margin-right: 10px;
-    width: 25px;
-}
 
 /*
  * -----------------------------------------------------------------
  * Login/Register Page Styling
  * -----------------------------------------------------------------
  */
-
-.panel-login-container {
-    position: relative;
-    top: 10%;
-}
 
 .panel-login {
 	border-color: #ccc;
@@ -138,47 +156,54 @@ small {
     background-color: #212124;
     border: none;
     box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
-}
-.panel-login>.panel-heading {
-	color: #00415d;
-	text-align:center;
-}
-.panel-login>.panel-heading a{
-	text-decoration: none;
-	color: #666;
-	font-weight: bold;
-	font-size: 15px;
-	-webkit-transition: all 0.1s linear;
-	-moz-transition: all 0.1s linear;
-	transition: all 0.1s linear;
-}
-.panel-login>.panel-heading a.active{
-	color: #17ac7e;
-	font-size: 18px;
-}
-.panel-login>.panel-heading hr{
-	margin-top: 10px;
-	margin-bottom: 0px;
-	clear: both;
-	border: 0;
-	height: 1px;
-    background-color: rgba(230,230,230, 0.8);
-}
-.panel-login input[type="text"],.panel-login input[type="email"],.panel-login input[type="password"] {
-	height: 45px;
-	border: 1px solid #ddd;
-	font-size: 16px;
-	-webkit-transition: all 0.1s linear;
-	-moz-transition: all 0.1s linear;
-	transition: all 0.1s linear;
-}
-.panel-login input:hover,
-.panel-login input:focus {
-	outline:none;
-	-webkit-box-shadow: none;
-	-moz-box-shadow: none;
-	box-shadow: none;
-	border-color: #ccc;
+
+    .panel-heading {
+        color: #00415d;
+	    text-align:center;
+
+        a {
+            text-decoration: none;
+            color: #666;
+            font-weight: bold;
+            font-size: 15px;
+            -webkit-transition: all 0.1s linear;
+            -moz-transition: all 0.1s linear;
+            transition: all 0.1s linear;
+
+            &.active {
+                color: $positiveHighlight;
+	            font-size: 18px;
+            }
+        }
+
+        hr {
+            margin-top: 10px;
+            margin-bottom: 0px;
+            clear: both;
+            border: 0;
+            height: 1px;
+            background-color: rgba(230,230,230, 0.8);
+        }
+
+        input[type=text], input[type=email], input[type=password] {
+            height: 45px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            -webkit-transition: all 0.1s linear;
+            -moz-transition: all 0.1s linear;
+            transition: all 0.1s linear;
+        }
+
+        input {
+            &:hover, &:focus {
+                outline:none;
+                -webkit-box-shadow: none;
+                -moz-box-shadow: none;
+                box-shadow: none;
+                border-color: #ccc;
+            }
+        }
+    }
 }
 
 /*
@@ -214,122 +239,119 @@ small {
  *  -----------------------------------------------------------------
  */
 
- #saveTickerBtn {
-     padding: 5px 10px;
-     margin-top: -4px;
-     margin-bottom: -10px;
- }
-
- .refresh-ticker-btn {
-     margin-top: -6px;
- }
-
- .remove-ticker-btn {
-     margin-top: 10px;
- }
-
 .tickerItem {
     background-color: #212124;
     border: none;
     box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
     margin: 10px 0px !important;
     padding: 7px;
+
+    &.positive {
+
+        &:hover {
+            box-shadow: 0px 0px 10px $positiveHighlight;
+        }
+        
+        path {
+            stroke: $positiveHighlight;
+        }
+    }
+    &.negative {
+
+        &:hover {
+            box-shadow: 0px 0px 10px $negativeHighlight;
+        }
+
+        path {
+            stroke: $negativeHighlight;
+        }        
+    }
+
+    a {
+        text-decoration: none;
+        color: lightgrey;
+    }
+
+    .panel-heading {
+        background-image: none;
+        background-color: rgba(0,0,0,0) !important;
+        color: lightgrey;
+        border: none;
+    }
+
+    .sub-panel {
+        background-color: #303032;
+        border-radius: 3px;
+        box-shadow: 0px 1px 1px rgba(50,50,50,0.8);
+        margin: 10px 2px;
+        padding: 10px;
+
+        &.stat-panel, &.graph-panel{
+            padding-left: 25px;
+            padding-right: 25px;
+            height: 30em;
+        }
+
+        &.stat-panel {
+            .stat-item {
+                margin: 10px 0px;
+            }
+            .stat-item > * {
+                margin: 0px;
+            }
+            .stat-val {
+                font-weight: bold;
+                font-size: 1.2em;
+            }
+            .stat-name {
+                font-size: 1em;
+                color: #a2a2a2;
+            }
+        }
+
+        &.graph-panel {
+            .price {
+                font-size: 3em;
+            }
+            .d3-wrapper {
+                height: 70%;
+            }
+            .axis path, .axis line {
+                fill: none;
+                stroke: black;
+                stroke-width: 1;
+                /*shape-rendering: crispEdges;*/
+            }
+            .stock {
+                color: white
+            }
+        }
+    }
+
+    #saveTickerBtn {
+        padding: 5px 10px;
+        margin-top: -4px;
+        margin-bottom: -10px;
+    }
+
+    .refresh-ticker-btn {
+        margin-top: -6px;
+    }
+
+    .remove-ticker-btn {
+        margin-top: 10px;
+    }
+
+    .change-percent {
+        &.positive {
+            color: $positiveHighlight;
+        }
+        &.negative {
+            color: $negativeHighlight;
+        }
+    }
 }
 
-.change-percent.positive {
-    color: #17ac7e;
-}
-.change-percent.negative {
-    color: #ED4337;
-}
-
-.tickerItem.positive:hover {
-    box-shadow: 0px 0px 10px #17ac7e;
-}
-.tickerItem.negative:hover {
-    box-shadow: 0px 0px 10px #ED4337;
-}
-
-.tickerItem > .panel-heading {
-    background-color: rgba(0,0,0,0);
-    color: lightgrey;
-    border: none;
-}
-
-.tickerItem > a {
-    text-decoration: none;
-    color: lightgrey;
-}
-
-.sub-panel {
-    background-color: #303032;
-    border-radius: 3px;
-    box-shadow: 0px 1px 1px rgba(50,50,50,0.8);
-    margin: 10px 2px;
-    padding: 10px;
-}
-
-.stat-panel, .graph-panel{
-    padding-left: 25px;
-    padding-right: 25px;
-    height: 30em;
-}
-
-
-.stat-item {
-    margin: 10px 0px;
-}
-
-.stat-item > * {
-    margin: 0px;
-}
-
-
-.stat-val {
-    font-weight: bold;
-    font-size: 1.2em;
-}
-
-.stat-name {
-    font-size: 1em;
-    color: #a2a2a2;
-}
-
-path {
-    stroke-width: 3;
-    fill: none;
-}
-.tickerItem.positive path {
-    stroke: #17ac7e;
-}
-.tickerItem.negative path {
-    stroke: #ED4337;
-}
-
-.axis path,
-.axis line {
-    fill: none;
-    stroke: black;
-    stroke-width: 1;
-    shape-rendering: crispEdges;
-}
-
-.stock {
-	color: white
-}
-.price {
-  font-size: 3em;
-}
-
-
-.d3-wrapper {
-  height: 70%;
-}
-
-svg {
-  height: 100%;
-  width: 100%;
-}
 
 /*.d3-wrapper {
     display: inline-block;
@@ -345,28 +367,3 @@ svg {
     top: 10px;
     left: 0;
 }*/
-
-/*
- *  -----------------------------------------------------------------
- *  Edit Profile Page styling
- *  -----------------------------------------------------------------
- */
-
-#edit-profile-panel {
-    background-color: #212124;
-    border: none;
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
-    margin: 10px 0px !important;
-    padding: 7px;
-    color: white;
-}
-#edit-profile-panel > * {
-    background-color: #212124;
-    color: white;
-}
-
-@media screen and (max-width:767px) {
-    .affix#searchBar {
-        left: 60%;
-    }
-}

@@ -1,33 +1,18 @@
 const TickerList = React.createClass({
     getInitialState: function () {
-        return { tickers: [] };
-    },
-    addTicker: function (newTicker) {
-        var tickers = this.state.tickers.concat([newTicker]);
-
-        this.setState({ tickers: tickers });
-    },
-    componentDidMount: function () {
-        $.ajax({
-            url: '/profileTickers',
-            dataType: 'json',
-            cache: false,
-            success: (tickerList) => {
-                this.setState({ tickers: tickerList.tickers });
-            },
-            error: (xhr, status, err) => {
-                console.error('/tickerList', status, err.toString());
-            }
-        });
+        return {};
     },
     render: function () {
 
-        let tickerList = this.state.tickers;
+        let tickerList = this.props.userTickers();
         let tickers = tickerList.map((ticker) => {
             return (
                 <Ticker
                     tickerData={ticker}
-                    saved="true"></Ticker>
+                    userTickers={this.props.userTickers.bind(this)} 
+                    updateTicker={this.props.updateTicker.bind(this)}
+                    removeTicker={this.props.removeTicker.bind(this)}
+                    saved="true" />
             );
         });
 

@@ -1,35 +1,30 @@
 const TickerStats = React.createClass({
-    getInitialState: function () {
+    getInitialState () {
         return {refreshRunning: false, tickerData: this.props.tickerData};
     },
-    refreshTickerStats: function() {
+    refreshTickerStats () {
         this.setState({refreshRunning: true});
         this.updateTicker($(this).data('symbol'), true);
     },
-    updateTicker: function(tickerSymbol, showSuccessAlert) {
+    updateTicker () {
         var self = this;
 
         $.ajax({
             url: '/updateTicker',
             type: 'PUT',
             data: {
-                symbol: tickerSymbol
+                symbol: this.state.tickerData.symbol
             },
             success: function(data) {
-                // Create the render data object to be passed to the renderer
-                this.setState({tickerData: data.result});
-
-                // Display success message to the user
-                if (showSuccessAlert) {
-                    swal({
-                        title: "Success!",
-                        text: renderData.tickerSymbol + " is now up to date.",
-                        type: "success",
-                        confirmButtonText: "OK"
-                    });
-                }
-
+                self.props.updateTicker(self.state.tickerData.symbol, data.result);
                 self.setState({refreshRunning: false});
+
+                swal({
+                    title: "Success!",
+                    text: self.state.tickerData.symbol + " is now up to date.",
+                    type: "success",
+                    confirmButtonText: "OK"
+                });
             },
             error: function(xhr, status, error) {
                 swal({
@@ -41,9 +36,6 @@ const TickerStats = React.createClass({
             }
         });
     },
-    isRefreshDisabled: function() {
-        return (this.state.refreshRunning) ? 'true' : 'false';
-    },
     render() {
         var refreshButton = null;
       
@@ -51,7 +43,13 @@ const TickerStats = React.createClass({
             refreshButton = (
                 <span className="pull-right">
                     <label className ="hidden" for={"refresh-" + this.state.tickerData.symbol}> Refresh {this.state.tickerData.symbol} </label>
-                    <button type="button" id = {"refresh-" + this.state.tickerData.symbol} className="btn btn-primary refresh-ticker-btn" data-symbol={this.state.tickerData.symbol} disabled={isRefreshDisabled}>
+                    <button 
+                        type="button" 
+                        id={"refresh-" + this.state.tickerData.symbol} 
+                        className="btn btn-primary refresh-ticker-btn" 
+                        disabled={this.state.refreshRunning}
+                        onClick={this.updateTicker}>
+
                         <span className="glyphicon glyphicon-refresh" aria-hidden="true"></span>
                     </button>
                 </span>

@@ -24,8 +24,6 @@ const Nav = React.createClass({
                         <li className="dropdown">
                             <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> username <span className="caret"></span></a>
                             <ul className="dropdown-menu">
-                                <li><a href="/account">Edit Account</a></li>
-                                <li role="separator" className="divider"></li>
                                 <li><button id="signOutBtn" type="button" className="btn btn-danger" onClick={this.signOut}>Sign Out</button></li>
                             </ul>
                         </li>

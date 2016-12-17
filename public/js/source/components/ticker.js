@@ -1,9 +1,11 @@
 const Ticker = React.createClass({
-  getInitialState: function () {
+  getInitialState() {
     return {};
   },
   saveTicker() {
     if (this.props.saved) return;
+
+    var self = this;
 
     $.ajax({
         url: '/saveTicker',
@@ -12,7 +14,7 @@ const Ticker = React.createClass({
             symbol: this.props.tickerData.symbol
         },
         success: function(data) {
-            // ADD TICKER TO PARENT SAVED TICKER LIST
+            self.props.addTicker(self.props.tickerData);
             // ADD TICKER SYMBOL TO CACHE
         },
         error: function(xhr, status, error) {
@@ -28,14 +30,16 @@ const Ticker = React.createClass({
   removeTicker() {
     if (!this.props.saved) return;
 
+    var self = this;
+
     $.ajax({
         url: '/removeTicker',
         type: 'DELETE',
         data: {
-            symbol: $(event.target).data('symbol')
+            symbol: this.props.tickerData.symbol
         },
         success: function(data) {
-            // REMOVE TICKER FROM PARENT SAVED TICKER LIST
+            self.props.removeTicker(self.props.tickerData.symbol);
             //removeFromCache($(event.target).data('symbol'));
         },
         error: function(xhr, status, error) {
@@ -59,7 +63,7 @@ const Ticker = React.createClass({
           <a data-toggle="collapse" data-parent="#accordion" href={"#collapse" + this.props.tickerData.symbol}>
               <div className="panel-heading">
                   <h3 className="panel-title">
-                    {this.props.tickerData.symbol} <span className={"change-percent " + this.props.tickerData.change}>({this.props.tickerData.ChangeInPercent})</span>
+                    {this.props.tickerData.symbol} <span className={"change-percent " + this.props.tickerData.change}>({this.props.tickerData.ChangeinPercent})</span>
                   </h3>
               </div>
           </a>
@@ -74,7 +78,8 @@ const Ticker = React.createClass({
                       <div className="col-xs-12 col-sm-6">
                           <TickerStats
                               saved="true"
-                              tickerData={this.props.tickerData} />
+                              tickerData={this.props.tickerData}
+                              updateTicker={this.props.updateTicker.bind(this)} />
                       </div>
                   </div>
                   <button type="button" className="btn btn-danger remove-ticker-btn pull-right" onClick={this.removeTicker}>Remove</button>
@@ -87,13 +92,20 @@ const Ticker = React.createClass({
     } else {
       // Search ticker
 
-      var addTickerBtn = null;
+      var self = this;
 
-      if (this.props.userSavedTickers && this.props.userSavedTickers.indexOf(this.props.tickerData.symbol) === -1) {
+      var addTickerBtn = null;
+      var userTickers = this.props.userTickers();
+
+      var tickerExists = userTickers.filter(function(ticker) { 
+          return ticker.symbol === self.props.tickerData.symbol;
+        }).length;
+
+      if (!tickerExists) {
         addTickerBtn = (
-          <span className="pull-right">
+          <span>
             <label className ="hidden" for="saveTickerBtn"> Add {this.props.tickerData.symbol} to Portfolio  </label>
-            <button type="button" id="saveTickerBtn" className="btn btn-primary" onClick={this.saveTicker}><span className="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+            <button type="button" id="saveTickerBtn" className="btn btn-primary pull-right" onClick={this.saveTicker}><span className="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
             <div className="clearfix"></div>
           </span>
         );
@@ -103,7 +115,7 @@ const Ticker = React.createClass({
         <div id="panel-search" className={"panel panel-default tickerItem " + this.props.tickerData.change}>
           <div className="panel-heading">
               <h3 className="panel-title">
-                {this.props.tickerData.symbol} <span className={"change-percent " + this.props.tickerData.change}>({this.props.tickerData.ChangeInPercent})</span>
+                {this.props.tickerData.symbol} <span className={"change-percent " + this.props.tickerData.change}>({this.props.tickerData.ChangeinPercent})</span>
               </h3>
               {addTickerBtn}
           </div>
