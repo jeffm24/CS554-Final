@@ -14,8 +14,7 @@ const Ticker = React.createClass({
             symbol: this.props.tickerData.symbol
         },
         success: function(data) {
-            self.props.addTicker(self.props.tickerData);
-            // ADD TICKER SYMBOL TO CACHE
+            self.props.dispatch({type: 'ADD_TICKER', newTicker: self.props.tickerData});
         },
         error: function(xhr, status, error) {
             swal({
@@ -39,8 +38,7 @@ const Ticker = React.createClass({
             symbol: this.props.tickerData.symbol
         },
         success: function(data) {
-            self.props.removeTicker(self.props.tickerData.symbol);
-            //removeFromCache($(event.target).data('symbol'));
+            self.props.dispatch({type: 'REMOVE_TICKER', symbol: self.props.tickerData.symbol});
         },
         error: function(xhr, status, error) {
             swal({
@@ -71,15 +69,14 @@ const Ticker = React.createClass({
               <div className="panel-body">
                   <div className="row">
                       <div className="col-xs-12 col-sm-6">
-                          <TickerGraph
+                          <CTickerGraph
                               saved="true"
                               tickerData={this.props.tickerData} />
                       </div>
                       <div className="col-xs-12 col-sm-6">
-                          <TickerStats
+                          <CTickerStats
                               saved="true"
-                              tickerData={this.props.tickerData}
-                              updateTicker={this.props.updateTicker.bind(this)} />
+                              tickerData={this.props.tickerData} />
                       </div>
                   </div>
                   <button type="button" className="btn btn-danger remove-ticker-btn pull-right" onClick={this.removeTicker}>Remove</button>
@@ -95,16 +92,15 @@ const Ticker = React.createClass({
       var self = this;
 
       var addTickerBtn = null;
-      var userTickers = this.props.userTickers();
 
-      var tickerExists = userTickers.filter(function(ticker) { 
+      var tickerExists = this.props.userTickers.filter(function(ticker) { 
           return ticker.symbol === self.props.tickerData.symbol;
         }).length;
 
       if (!tickerExists) {
         addTickerBtn = (
           <span>
-            <label className ="hidden" for="saveTickerBtn"> Add {this.props.tickerData.symbol} to Portfolio  </label>
+            <label className ="hidden" htmlFor="saveTickerBtn"> Add {this.props.tickerData.symbol} to Portfolio  </label>
             <button type="button" id="saveTickerBtn" className="btn btn-primary pull-right" onClick={this.saveTicker}><span className="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
             <div className="clearfix"></div>
           </span>
@@ -122,11 +118,11 @@ const Ticker = React.createClass({
           <div className="panel-body">
               <div className="row">
                   <div className="col-xs-12 col-sm-6">
-                      <TickerGraph
+                      <CTickerGraph
                         tickerData={this.props.tickerData} />
                   </div>
                   <div className="col-xs-12 col-sm-6">
-                      <TickerStats
+                      <CTickerStats
                         tickerData={this.props.tickerData} />
                   </div>
               </div>
@@ -139,3 +135,5 @@ const Ticker = React.createClass({
     return tickerContent;
   }
 });
+
+const CTicker = connect(state => state)(Ticker);

@@ -1,30 +1,29 @@
 const Wrapper = React.createClass({
     getInitialState() {
-        return { loggedIn: false};
+        return {};
     },
     componentDidMount() {
+        var self = this;
+
         $.ajax({
             url: '/checkLoginStatus',
             type: 'GET'
         }).done((data) => {
-            this.setState({ loggedIn: data.loggedIn });
+            self.props.dispatch({type: 'SET_LOGIN', loginState: data.loggedIn});   
         });
-    },
-    onLogin() {
-        this.setState({ loggedIn: true });
     },
     render() {
         let mainComponent = null;
 
-        if(this.state.loggedIn){
-            mainComponent = <Profile/>
-        }else{
-            mainComponent = <LoginForm loginFunc={this.onLogin.bind(this)} />
+        if (this.props.loggedIn){
+            mainComponent = <CProfile />
+        } else {
+            mainComponent = <CLoginForm />
         }
 
         return (
             <div>
-                <Nav loggedIn={this.state.loggedIn} />
+                <CNav />
                 <div className="container">
                     {mainComponent}
                 </div>
@@ -33,4 +32,71 @@ const Wrapper = React.createClass({
     }
 });
 
-ReactDOM.render(<Wrapper/>, document.getElementById('stock-app'));
+const CWrapper = connect(state => state)(Wrapper);
+
+const store = Redux.createStore(function(state = {loggedIn: false, userTickers: []}, action) {
+    switch (action.type) {
+        case 'SET_LOGIN':
+
+            return {
+                loggedIn: action.loginState,
+                userTickers: state.userTickers
+            };
+
+        case 'SET_TICKERS':
+
+            return {
+                loggedIn: state.loggedIn,
+                userTickers: action.userTickers
+            };
+
+        case 'ADD_TICKER':
+
+            var tickerExists = state.userTickers.filter(function(ticker) { 
+                return ticker.symbol === action.newTicker.symbol;
+            }).length;
+
+            var newState = { loggedIn: state.loggedIn, userTickers: state.userTickers };
+            
+            if (!tickerExists) {
+                newState.userTickers = state.userTickers.concat([action.newTicker]);
+            }
+
+            return newState;
+
+        case 'UPDATE_TICKER':
+
+            var newTickers = state.userTickers.map(function(ticker) {
+                if (ticker.symbol === action.updateTicker.symbol) {
+                    return action.updateTicker;
+                } else {
+                    return ticker;
+                }
+            });
+
+            return {
+                loggedIn: state.loggedIn,
+                userTickers: newTickers
+            };
+
+        case 'REMOVE_TICKER':
+
+            var newTickers = state.userTickers.filter(function(ticker) {
+                return ticker.symbol !== action.symbol;
+            });
+
+            return {
+                loggedIn: state.loggedIn,
+                userTickers: newTickers
+            };
+
+        default:
+            return state
+    }
+})
+
+ReactDOM.render(
+    <Provider store={store}>
+        <CWrapper />
+    </Provider>, 
+    document.getElementById('stock-app'));

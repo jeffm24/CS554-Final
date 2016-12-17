@@ -16,7 +16,7 @@ const TickerStats = React.createClass({
                 symbol: this.state.tickerData.symbol
             },
             success: function(data) {
-                self.props.updateTicker(self.state.tickerData.symbol, data.result);
+                self.props.dispatch({type: 'UPDATE_TICKER', updateTicker: data.result});
                 self.setState({refreshRunning: false});
 
                 swal({
@@ -42,7 +42,7 @@ const TickerStats = React.createClass({
         if (this.props.saved) {
             refreshButton = (
                 <span className="pull-right">
-                    <label className ="hidden" for={"refresh-" + this.state.tickerData.symbol}> Refresh {this.state.tickerData.symbol} </label>
+                    <label className ="hidden" htmlFor={"refresh-" + this.state.tickerData.symbol}> Refresh {this.state.tickerData.symbol} </label>
                     <button 
                         type="button" 
                         id={"refresh-" + this.state.tickerData.symbol} 
@@ -118,3 +118,5 @@ const TickerStats = React.createClass({
         );
     }
 });
+
+const CTickerStats = connect(state => state)(TickerStats);

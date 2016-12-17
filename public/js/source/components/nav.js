@@ -3,11 +3,13 @@ const Nav = React.createClass({
         return {};
     },
     signOut() {
+        var self = this;
+
         $.ajax({
             url: '/signout',
             type: 'POST',
             success: function(data) {
-                location.reload();
+                self.props.dispatch({type: 'SET_LOGIN', loginState: false});
             },
             error: function(xhr, status, error) {
                 alert(xhr.responseText + ' (' + xhr.status + ')');
@@ -49,4 +51,6 @@ const Nav = React.createClass({
             </nav>
         );
     }
-})
+});
+
+const CNav = connect(state => state)(Nav);

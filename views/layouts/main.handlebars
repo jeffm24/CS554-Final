@@ -18,12 +18,20 @@
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="/assets/css/bootstrap-theme.min.css" rel="stylesheet">
     <link href="/assets/css/sweetalert.css" rel="stylesheet">
-    <link href="/assets/css/styles.min.css" rel="stylesheet">
+    <link href="/assets/css/styles.min.css" rel="stylesheet">    
 </head>
 <body>
     {{{body}}}
 
     <script src="/assets/js/vendor.js"></script>
+    <script src="/assets/js/bundle.js"></script>
+    <script>
+        window.React = require('react');
+        window.ReactDOM = require('react-dom');
+        window.Redux = require('redux');
+        window.Provider = require('react-redux').Provider;
+        window.connect = require('react-redux').connect;
+    </script>
     <script src="/assets/js/components.js"></script>
 </body>
 

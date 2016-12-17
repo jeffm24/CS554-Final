@@ -4,14 +4,12 @@ const TickerList = React.createClass({
     },
     render: function () {
 
-        let tickerList = this.props.userTickers();
+        let tickerList = this.props.userTickers;
         let tickers = tickerList.map((ticker) => {
             return (
-                <Ticker
+                <CTicker
                     tickerData={ticker}
-                    userTickers={this.props.userTickers.bind(this)} 
-                    updateTicker={this.props.updateTicker.bind(this)}
-                    removeTicker={this.props.removeTicker.bind(this)}
+                    key={ticker.symbol}
                     saved="true" />
             );
         });
@@ -29,4 +27,4 @@ const TickerList = React.createClass({
     }
 });
 
-//ReactDOM.render(<TickerList/>, document.getElementById('content'));
+const CTickerList = connect(state => state)(TickerList);

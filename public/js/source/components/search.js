@@ -74,10 +74,7 @@ const Search = React.createClass({
 
         if (this.state.searchTicker) {
             searchTicker = (
-                <Ticker 
-                    tickerData={this.state.searchTicker}
-                    userTickers={this.props.userTickers.bind(this)} 
-                    addTicker={this.props.addTicker.bind(this)} />
+                <CTicker tickerData={this.state.searchTicker} />
             );
         }
 
@@ -88,7 +85,7 @@ const Search = React.createClass({
                 </div>
                 <form id="searchForm" onSubmit={this.submitSearchForm}>
                     <div id="searchBar" className="input-group" data-spy="affix" data-offset-top={this.state.scrollTop}>
-                        <label className = "hidden" for="searchBarInput"> Enter Search Here: </label>
+                        <label className = "hidden" htmlFor="searchBarInput"> Enter Search Here: </label>
                         <input type="text" id="searchBarInput" name="searchBarInput" className="form-control" placeholder="Search Tickers" onChange={this.dynamicSearchSuggest} />
                         <span className="input-group-btn">
                             <button type="submit" className="btn btn-primary" id="searchBtn">Go!</button>

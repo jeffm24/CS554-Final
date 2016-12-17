@@ -181,28 +181,28 @@ const TickerGraph = React.createClass({
                 <div className="d3-wrapper" id={"d3" + searchIdLong + "-" + this.state.tickerData.symbol} data-symbol = {this.state.tickerData.symbol}></div>
 
                 <div className = {"buttons btn-group " + searchBtnsClass} id={"buttons-" + this.state.tickerData.symbol}>
-                    <label className ="hidden" for={"1W-" + this.state.tickerData.symbol}> View 1 Week Graph for {this.state.tickerData.symbol} </label>
+                    <label className ="hidden" htmlFor={"1W-" + this.state.tickerData.symbol}> View 1 Week Graph for {this.state.tickerData.symbol} </label>
                     <button 
                         id={"1W" + searchIdShort + "-" + this.state.tickerData.symbol} 
                         className={"btn btn-primary btn-graph week " + this.state.tickerData.change + " " + this.isActivePeriod('1W')} 
                         type="button"
                         onClick={() => {this.getDataPeriod('1W')}}>1W</button>
                     
-                    <label className ="hidden" for={"1M-" + this.state.tickerData.symbol}> View 1 Month Graph for {this.state.tickerData.symbol} </label>
+                    <label className ="hidden" htmlFor={"1M-" + this.state.tickerData.symbol}> View 1 Month Graph for {this.state.tickerData.symbol} </label>
                     <button 
                         id={"1M" + searchIdShort + "-" + this.state.tickerData.symbol} 
                         className={"btn btn-primary btn-graph month " + this.state.tickerData.change + " " + this.isActivePeriod('1M')} 
                         type="button"
                         onClick={() => {this.getDataPeriod('1M')}}>1M</button>
                     
-                    <label className ="hidden" for={"1M-" + this.state.tickerData.symbol}> View 3 Month Graph for {this.state.tickerData.symbol} </label>
+                    <label className ="hidden" htmlFor={"1M-" + this.state.tickerData.symbol}> View 3 Month Graph for {this.state.tickerData.symbol} </label>
                     <button 
                         id={"3M" + searchIdShort + "-" + this.state.tickerData.symbol} 
                         className={"btn btn-primary btn-graph 3month " + this.state.tickerData.change + " " + this.isActivePeriod('3M')} 
                         type="button" 
                         onClick={() => {this.getDataPeriod('3M')}}>3M</button>
 
-                    <label className ="hidden" for={"1Y-" + this.state.tickerData.symbol}> View 1 Year Graph for {this.state.tickerData.symbol} </label>
+                    <label className ="hidden" htmlFor={"1Y-" + this.state.tickerData.symbol}> View 1 Year Graph for {this.state.tickerData.symbol} </label>
                     <button 
                         id={"1Y" + searchIdShort + "-" + this.state.tickerData.symbol} 
                         className={"btn btn-primary btn-graph year " + this.state.tickerData.change + " " + this.isActivePeriod('1Y')} 
@@ -213,3 +213,5 @@ const TickerGraph = React.createClass({
         );
     }
 });
+
+const CTickerGraph = connect(state => state)(TickerGraph);

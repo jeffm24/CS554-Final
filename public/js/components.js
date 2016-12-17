@@ -3,10 +3,10 @@
 var LoginForm = React.createClass({
     displayName: 'LoginForm',
     getInitialState: function getInitialState() {
-        return { loginInfo: {}, registerInfo: {}, activeView: 'login' };
+        return { activeView: 'login' };
     },
     resetState: function resetState() {
-        this.setState({ loginInfo: {}, registerInfo: {}, activeView: 'login' });
+        this.setState({ activeView: 'login' });
     },
     submitRegisterForm: function submitRegisterForm(e) {
         e.preventDefault();
@@ -17,9 +17,9 @@ var LoginForm = React.createClass({
             url: '/register',
             type: 'POST',
             data: {
-                username: this.state.registerInfo.username,
-                password: this.state.registerInfo.password,
-                confirm: this.state.registerInfo.confirmPassword
+                username: $('#register-username').val(),
+                password: $('#register-password').val(),
+                confirm: $('#register-confirm-password').val()
             },
             success: function success(data) {
                 swal({
@@ -43,19 +43,20 @@ var LoginForm = React.createClass({
         });
     },
     submitLoginForm: function submitLoginForm(e) {
-        var _this = this;
-
         e.preventDefault();
+
+        var self = this;
 
         $.ajax({
             url: '/signin',
             type: 'POST',
             data: {
-                username: this.state.loginInfo.username,
-                password: this.state.loginInfo.password
+                username: $('#login-username').val(),
+                password: $('#login-password').val()
             }
         }).done(function (data) {
-            _this.props.loginFunc();
+
+            self.props.dispatch({ type: 'SET_LOGIN', loginState: true });
         }).fail(function (xhr, status, error) {
             swal({
                 title: "Error!",
@@ -67,23 +68,6 @@ var LoginForm = React.createClass({
 
         this.resetState();
     },
-    changeLoginInfo: function changeLoginInfo(e) {
-        var newLoginInfo = {
-            username: $('#login-username').val(),
-            password: $('#login-password').val()
-        };
-
-        this.setState({ loginInfo: newLoginInfo });
-    },
-    changeRegisterInfo: function changeRegisterInfo(e) {
-        var newRegisterInfo = {
-            username: $('#register-username').val(),
-            password: $('#register-password').val(),
-            confirmPassword: $('#register-confirm-password').val()
-        };
-
-        this.setState({ registerInfo: newRegisterInfo });
-    },
     isViewActive: function isViewActive(view) {
         return this.state.activeView === view ? 'active' : '';
     },
@@ -94,7 +78,7 @@ var LoginForm = React.createClass({
         this.setState({ activeView: view });
     },
     render: function render() {
-        var _this2 = this;
+        var _this = this;
 
         return React.createElement(
             'div',
@@ -117,7 +101,7 @@ var LoginForm = React.createClass({
                                 React.createElement(
                                     'a',
                                     { href: '#', className: this.isViewActive('login'), onClick: function onClick() {
-                                            _this2.setActiveView('login');
+                                            _this.setActiveView('login');
                                         } },
                                     'Login'
                                 )
@@ -128,7 +112,7 @@ var LoginForm = React.createClass({
                                 React.createElement(
                                     'a',
                                     { href: '#', className: this.isViewActive('register'), onClick: function onClick() {
-                                            _this2.setActiveView('register');
+                                            _this.setActiveView('register');
                                         } },
                                     'Register'
                                 )
@@ -153,36 +137,32 @@ var LoginForm = React.createClass({
                                         { className: 'form-group' },
                                         React.createElement(
                                             'label',
-                                            { className: 'hidden', 'for': 'login-username' },
+                                            { className: 'hidden', htmlFor: 'login-username' },
                                             'Username'
                                         ),
                                         React.createElement('input', {
                                             type: 'text',
                                             name: 'login-username',
                                             id: 'login-username',
-                                            tabindex: '1',
+                                            tabIndex: '1',
                                             className: 'form-control',
-                                            placeholder: 'Username',
-                                            onChange: this.changeLoginInfo,
-                                            value: this.state.loginInfo.username })
+                                            placeholder: 'Username' })
                                     ),
                                     React.createElement(
                                         'div',
                                         { className: 'form-group' },
                                         React.createElement(
                                             'label',
-                                            { className: 'hidden', 'for': 'login-password' },
+                                            { className: 'hidden', htmlFor: 'login-password' },
                                             'Password'
                                         ),
                                         React.createElement('input', {
                                             type: 'password',
                                             name: 'login-password',
                                             id: 'login-password',
-                                            tabindex: '2',
+                                            tabIndex: '2',
                                             className: 'form-control',
-                                            placeholder: 'Password',
-                                            onChange: this.changeLoginInfo,
-                                            value: this.state.loginInfo.password })
+                                            placeholder: 'Password' })
                                     ),
                                     React.createElement(
                                         'div',
@@ -193,7 +173,7 @@ var LoginForm = React.createClass({
                                             React.createElement(
                                                 'div',
                                                 { className: 'col-sm-6 col-sm-offset-3' },
-                                                React.createElement('input', { type: 'submit', name: 'login-submit', id: 'login-submit', tabindex: '4', className: 'form-control btn btn-primary', value: 'Log In' })
+                                                React.createElement('input', { type: 'submit', name: 'login-submit', id: 'login-submit', tabIndex: '4', className: 'form-control btn btn-primary', value: 'Log In' })
                                             )
                                         )
                                     )
@@ -206,59 +186,48 @@ var LoginForm = React.createClass({
                                         { className: 'form-group' },
                                         React.createElement(
                                             'label',
-                                            { className: 'hidden', 'for': 'register-username' },
+                                            { className: 'hidden', htmlFor: 'register-username' },
                                             'Username'
                                         ),
                                         React.createElement('input', {
                                             type: 'text',
                                             name: 'register-username',
                                             id: 'register-username',
-                                            tabindex: '1',
+                                            tabIndex: '1',
                                             className: 'form-control',
-                                            placeholder: 'Username',
-                                            onChange: this.changeRegisterInfo,
-                                            value: this.state.registerInfo.username })
+                                            placeholder: 'Username' })
                                     ),
                                     React.createElement(
                                         'div',
                                         { className: 'form-group' },
                                         React.createElement(
                                             'label',
-                                            { className: 'hidden', 'for': 'register-password' },
+                                            { className: 'hidden', htmlFor: 'register-password' },
                                             'Password'
                                         ),
                                         React.createElement('input', {
                                             type: 'password',
                                             name: 'register-password',
                                             id: 'register-password',
-                                            tabindex: '2',
+                                            tabIndex: '2',
                                             className: 'form-control',
-                                            placeholder: 'Password',
-                                            onChange: this.changeRegisterInfo,
-                                            value: this.state.registerInfo.password })
+                                            placeholder: 'Password' })
                                     ),
                                     React.createElement(
                                         'div',
                                         { className: 'form-group' },
                                         React.createElement(
                                             'label',
-                                            { className: 'hidden', 'for': 'register-confirm-password' },
+                                            { className: 'hidden', htmlFor: 'register-confirm-password' },
                                             'Confirm Password'
                                         ),
                                         React.createElement('input', {
                                             type: 'password',
                                             name: 'register-confirm-password',
                                             id: 'register-confirm-password',
-                                            tabindex: '2',
+                                            tabIndex: '2',
                                             className: 'form-control',
-                                            placeholder: 'Confirm Password',
-                                            onChange: this.changeRegisterInfo,
-                                            value: this.state.registerInfo.confirmPassword })
-                                    ),
-                                    React.createElement(
-                                        'div',
-                                        { className: 'form-group' },
-                                        React.createElement('div', { className: 'g-recaptcha', 'data-sitekey': '6LfHNh8TAAAAAJeYQyoVxYu9o1iL3o1Lvm3e4SUh', style: { 'transform': 'scale(0.77)', '-webkit-transform': 'scale(0.77)', 'transform-origin': '0 0', '-webkit-transform-origin': '0 0' } })
+                                            placeholder: 'Confirm Password' })
                                     ),
                                     React.createElement(
                                         'div',
@@ -269,7 +238,7 @@ var LoginForm = React.createClass({
                                             React.createElement(
                                                 'div',
                                                 { className: 'col-sm-6 col-sm-offset-3' },
-                                                React.createElement('input', { type: 'submit', name: 'register-submit', id: 'register-submit', tabindex: '4', className: 'form-control btn btn-primary', value: 'Register' })
+                                                React.createElement('input', { type: 'submit', name: 'register-submit', id: 'register-submit', tabIndex: '4', className: 'form-control btn btn-primary', value: 'Register' })
                                             )
                                         )
                                     )
@@ -282,6 +251,10 @@ var LoginForm = React.createClass({
         );
     }
 });
+
+var CLoginForm = connect(function (state) {
+    return state;
+})(LoginForm);
 'use strict';
 
 var Nav = React.createClass({
@@ -290,11 +263,13 @@ var Nav = React.createClass({
         return {};
     },
     signOut: function signOut() {
+        var self = this;
+
         $.ajax({
             url: '/signout',
             type: 'POST',
             success: function success(data) {
-                location.reload();
+                self.props.dispatch({ type: 'SET_LOGIN', loginState: false });
             },
             error: function error(xhr, status, _error) {
                 alert(xhr.responseText + ' (' + xhr.status + ')');
@@ -375,44 +350,16 @@ var Nav = React.createClass({
         );
     }
 });
+
+var CNav = connect(function (state) {
+    return state;
+})(Nav);
 'use strict';
 
 var Profile = React.createClass({
     displayName: 'Profile',
     getInitialState: function getInitialState() {
-        return { userTickers: [] };
-    },
-    addTicker: function addTicker(newTicker) {
-        var tickerExists = this.state.userTickers.filter(function (ticker) {
-            return ticker.symbol === newTicker.symbol;
-        }).length;
-
-        if (!tickerExists) {
-            this.setState({ userTickers: this.state.userTickers.concat([newTicker]) });
-        }
-    },
-    updateTicker: function updateTicker(symbol, newData) {
-        var tickers = this.state.userTickers.map(function (ticker) {
-            if (ticker.symbol === symbol) {
-                return newData;
-            } else {
-                return ticker;
-            }
-        });
-
-        this.setState({ userTickers: tickers });
-    },
-    removeTicker: function removeTicker(symbol) {
-        var tickers = this.state.userTickers.filter(function (ticker) {
-            return ticker.symbol !== symbol;
-        });
-
-        this.setState({ userTickers: tickers });
-    },
-    getTickers: function getTickers() {
-        var tickers = this.state.userTickers;
-
-        return tickers;
+        return {};
     },
     componentDidMount: function componentDidMount() {
         var _this = this;
@@ -422,7 +369,7 @@ var Profile = React.createClass({
             dataType: 'json',
             cache: false,
             success: function success(tickerList) {
-                _this.setState({ userTickers: tickerList.tickers });
+                _this.props.dispatch({ type: 'SET_TICKERS', userTickers: tickerList.tickers });
             },
             error: function error(xhr, status, err) {
                 console.error('/tickerList', status, err.toString());
@@ -433,66 +380,15 @@ var Profile = React.createClass({
         return React.createElement(
             'div',
             null,
-            React.createElement(Search, {
-                userTickers: this.getTickers.bind(this),
-                addTicker: this.addTicker.bind(this) }),
-            React.createElement(TickerList, {
-                userTickers: this.getTickers.bind(this),
-                updateTicker: this.updateTicker.bind(this),
-                removeTicker: this.removeTicker.bind(this) })
-        );
-    }
-});
-"use strict";
-
-var RecipeList = React.createClass({
-    displayName: "RecipeList",
-
-    getInitialState: function getInitialState() {
-        return { recipes: [] };
-    },
-    addRecipe: function addRecipe(newRecipe) {
-        var recipes = this.state.recipes.concat([newRecipe]);
-
-        this.setState({ recipes: recipes });
-    },
-    componentDidMount: function componentDidMount() {
-        var _this = this;
-
-        $.ajax({
-            url: this.props.url,
-            dataType: 'json',
-            cache: false,
-            success: function success(recipeList) {
-                _this.setState({ recipes: recipeList });
-            },
-            error: function error(xhr, status, err) {
-                console.error(_this.props.url, status, err.toString());
-            }
-        });
-    },
-    render: function render() {
-        var recipeList = this.state.recipes;
-        var recipes = recipeList.map(function (recipe) {
-            return React.createElement(Recipe, {
-                title: recipe.title,
-                description: recipe.description,
-                id: recipe.id,
-                steps: recipe.steps,
-                ingredients: recipe.ingredients });
-        });
-
-        return React.createElement(
-            "div",
-            { className: "recipe" },
-            recipes,
-            React.createElement("hr", null),
-            React.createElement(RecipeForm, { onRecipeSubmit: this.addRecipe })
+            React.createElement(Search, null),
+            React.createElement(CTickerList, null)
         );
     }
 });
 
-//ReactDOM.render(<RecipeList url="/recipes"/>, document.getElementById('content'));
+var CProfile = connect(function (state) {
+    return state;
+})(Profile);
 'use strict';
 
 var Search = React.createClass({
@@ -591,10 +487,7 @@ var Search = React.createClass({
         var searchTicker = null;
 
         if (this.state.searchTicker) {
-            searchTicker = React.createElement(Ticker, {
-                tickerData: this.state.searchTicker,
-                userTickers: this.props.userTickers.bind(this),
-                addTicker: this.props.addTicker.bind(this) });
+            searchTicker = React.createElement(CTicker, { tickerData: this.state.searchTicker });
         }
 
         return React.createElement(
@@ -617,7 +510,7 @@ var Search = React.createClass({
                     { id: 'searchBar', className: 'input-group', 'data-spy': 'affix', 'data-offset-top': this.state.scrollTop },
                     React.createElement(
                         'label',
-                        { className: 'hidden', 'for': 'searchBarInput' },
+                        { className: 'hidden', htmlFor: 'searchBarInput' },
                         ' Enter Search Here: '
                     ),
                     React.createElement('input', { type: 'text', id: 'searchBarInput', name: 'searchBarInput', className: 'form-control', placeholder: 'Search Tickers', onChange: this.dynamicSearchSuggest }),
@@ -659,8 +552,7 @@ var Ticker = React.createClass({
                 symbol: this.props.tickerData.symbol
             },
             success: function success(data) {
-                self.props.addTicker(self.props.tickerData);
-                // ADD TICKER SYMBOL TO CACHE
+                self.props.dispatch({ type: 'ADD_TICKER', newTicker: self.props.tickerData });
             },
             error: function error(xhr, status, _error) {
                 swal({
@@ -684,8 +576,7 @@ var Ticker = React.createClass({
                 symbol: this.props.tickerData.symbol
             },
             success: function success(data) {
-                self.props.removeTicker(self.props.tickerData.symbol);
-                //removeFromCache($(event.target).data('symbol'));
+                self.props.dispatch({ type: 'REMOVE_TICKER', symbol: self.props.tickerData.symbol });
             },
             error: function error(xhr, status, _error2) {
                 swal({
@@ -739,17 +630,16 @@ var Ticker = React.createClass({
                             React.createElement(
                                 'div',
                                 { className: 'col-xs-12 col-sm-6' },
-                                React.createElement(TickerGraph, {
+                                React.createElement(CTickerGraph, {
                                     saved: 'true',
                                     tickerData: this.props.tickerData })
                             ),
                             React.createElement(
                                 'div',
                                 { className: 'col-xs-12 col-sm-6' },
-                                React.createElement(TickerStats, {
+                                React.createElement(CTickerStats, {
                                     saved: 'true',
-                                    tickerData: this.props.tickerData,
-                                    updateTicker: this.props.updateTicker.bind(this) })
+                                    tickerData: this.props.tickerData })
                             )
                         ),
                         React.createElement(
@@ -767,9 +657,8 @@ var Ticker = React.createClass({
             var self = this;
 
             var addTickerBtn = null;
-            var userTickers = this.props.userTickers();
 
-            var tickerExists = userTickers.filter(function (ticker) {
+            var tickerExists = this.props.userTickers.filter(function (ticker) {
                 return ticker.symbol === self.props.tickerData.symbol;
             }).length;
 
@@ -779,7 +668,7 @@ var Ticker = React.createClass({
                     null,
                     React.createElement(
                         'label',
-                        { className: 'hidden', 'for': 'saveTickerBtn' },
+                        { className: 'hidden', htmlFor: 'saveTickerBtn' },
                         ' Add ',
                         this.props.tickerData.symbol,
                         ' to Portfolio  '
@@ -823,13 +712,13 @@ var Ticker = React.createClass({
                         React.createElement(
                             'div',
                             { className: 'col-xs-12 col-sm-6' },
-                            React.createElement(TickerGraph, {
+                            React.createElement(CTickerGraph, {
                                 tickerData: this.props.tickerData })
                         ),
                         React.createElement(
                             'div',
                             { className: 'col-xs-12 col-sm-6' },
-                            React.createElement(TickerStats, {
+                            React.createElement(CTickerStats, {
                                 tickerData: this.props.tickerData })
                         )
                     )
@@ -840,6 +729,10 @@ var Ticker = React.createClass({
         return tickerContent;
     }
 });
+
+var CTicker = connect(function (state) {
+    return state;
+})(Ticker);
 'use strict';
 
 /*
@@ -1033,7 +926,7 @@ var TickerGraph = React.createClass({
                 { className: "buttons btn-group " + searchBtnsClass, id: "buttons-" + this.state.tickerData.symbol },
                 React.createElement(
                     'label',
-                    { className: 'hidden', 'for': "1W-" + this.state.tickerData.symbol },
+                    { className: 'hidden', htmlFor: "1W-" + this.state.tickerData.symbol },
                     ' View 1 Week Graph for ',
                     this.state.tickerData.symbol,
                     ' '
@@ -1051,7 +944,7 @@ var TickerGraph = React.createClass({
                 ),
                 React.createElement(
                     'label',
-                    { className: 'hidden', 'for': "1M-" + this.state.tickerData.symbol },
+                    { className: 'hidden', htmlFor: "1M-" + this.state.tickerData.symbol },
                     ' View 1 Month Graph for ',
                     this.state.tickerData.symbol,
                     ' '
@@ -1069,7 +962,7 @@ var TickerGraph = React.createClass({
                 ),
                 React.createElement(
                     'label',
-                    { className: 'hidden', 'for': "1M-" + this.state.tickerData.symbol },
+                    { className: 'hidden', htmlFor: "1M-" + this.state.tickerData.symbol },
                     ' View 3 Month Graph for ',
                     this.state.tickerData.symbol,
                     ' '
@@ -1087,7 +980,7 @@ var TickerGraph = React.createClass({
                 ),
                 React.createElement(
                     'label',
-                    { className: 'hidden', 'for': "1Y-" + this.state.tickerData.symbol },
+                    { className: 'hidden', htmlFor: "1Y-" + this.state.tickerData.symbol },
                     ' View 1 Year Graph for ',
                     this.state.tickerData.symbol,
                     ' '
@@ -1107,6 +1000,10 @@ var TickerGraph = React.createClass({
         );
     }
 });
+
+var CTickerGraph = connect(function (state) {
+    return state;
+})(TickerGraph);
 "use strict";
 
 var TickerList = React.createClass({
@@ -1116,15 +1013,12 @@ var TickerList = React.createClass({
         return {};
     },
     render: function render() {
-        var _this = this;
 
-        var tickerList = this.props.userTickers();
+        var tickerList = this.props.userTickers;
         var tickers = tickerList.map(function (ticker) {
-            return React.createElement(Ticker, {
+            return React.createElement(CTicker, {
                 tickerData: ticker,
-                userTickers: _this.props.userTickers.bind(_this),
-                updateTicker: _this.props.updateTicker.bind(_this),
-                removeTicker: _this.props.removeTicker.bind(_this),
+                key: ticker.symbol,
                 saved: "true" });
         });
 
@@ -1149,7 +1043,9 @@ var TickerList = React.createClass({
     }
 });
 
-//ReactDOM.render(<TickerList/>, document.getElementById('content'));
+var CTickerList = connect(function (state) {
+    return state;
+})(TickerList);
 'use strict';
 
 var TickerStats = React.createClass({
@@ -1171,7 +1067,7 @@ var TickerStats = React.createClass({
                 symbol: this.state.tickerData.symbol
             },
             success: function success(data) {
-                self.props.updateTicker(self.state.tickerData.symbol, data.result);
+                self.props.dispatch({ type: 'UPDATE_TICKER', updateTicker: data.result });
                 self.setState({ refreshRunning: false });
 
                 swal({
@@ -1200,7 +1096,7 @@ var TickerStats = React.createClass({
                 { className: 'pull-right' },
                 React.createElement(
                     'label',
-                    { className: 'hidden', 'for': "refresh-" + this.state.tickerData.symbol },
+                    { className: 'hidden', htmlFor: "refresh-" + this.state.tickerData.symbol },
                     ' Refresh ',
                     this.state.tickerData.symbol,
                     ' '
@@ -1411,39 +1307,40 @@ var TickerStats = React.createClass({
         );
     }
 });
+
+var CTickerStats = connect(function (state) {
+    return state;
+})(TickerStats);
 'use strict';
 
 var Wrapper = React.createClass({
     displayName: 'Wrapper',
     getInitialState: function getInitialState() {
-        return { loggedIn: false };
+        return {};
     },
     componentDidMount: function componentDidMount() {
-        var _this = this;
+        var self = this;
 
         $.ajax({
             url: '/checkLoginStatus',
             type: 'GET'
         }).done(function (data) {
-            _this.setState({ loggedIn: data.loggedIn });
+            self.props.dispatch({ type: 'SET_LOGIN', loginState: data.loggedIn });
         });
-    },
-    onLogin: function onLogin() {
-        this.setState({ loggedIn: true });
     },
     render: function render() {
         var mainComponent = null;
 
-        if (this.state.loggedIn) {
-            mainComponent = React.createElement(Profile, null);
+        if (this.props.loggedIn) {
+            mainComponent = React.createElement(CProfile, null);
         } else {
-            mainComponent = React.createElement(LoginForm, { loginFunc: this.onLogin.bind(this) });
+            mainComponent = React.createElement(CLoginForm, null);
         }
 
         return React.createElement(
             'div',
             null,
-            React.createElement(Nav, { loggedIn: this.state.loggedIn }),
+            React.createElement(CNav, null),
             React.createElement(
                 'div',
                 { className: 'container' },
@@ -1453,4 +1350,76 @@ var Wrapper = React.createClass({
     }
 });
 
-ReactDOM.render(React.createElement(Wrapper, null), document.getElementById('stock-app'));
+var CWrapper = connect(function (state) {
+    return state;
+})(Wrapper);
+
+var store = Redux.createStore(function () {
+    var state = arguments.length <= 0 || arguments[0] === undefined ? { loggedIn: false, userTickers: [] } : arguments[0];
+    var action = arguments[1];
+
+    switch (action.type) {
+        case 'SET_LOGIN':
+
+            return {
+                loggedIn: action.loginState,
+                userTickers: state.userTickers
+            };
+
+        case 'SET_TICKERS':
+
+            return {
+                loggedIn: state.loggedIn,
+                userTickers: action.userTickers
+            };
+
+        case 'ADD_TICKER':
+
+            var tickerExists = state.userTickers.filter(function (ticker) {
+                return ticker.symbol === action.newTicker.symbol;
+            }).length;
+
+            var newState = { loggedIn: state.loggedIn, userTickers: state.userTickers };
+
+            if (!tickerExists) {
+                newState.userTickers = state.userTickers.concat([action.newTicker]);
+            }
+
+            return newState;
+
+        case 'UPDATE_TICKER':
+
+            var newTickers = state.userTickers.map(function (ticker) {
+                if (ticker.symbol === action.updateTicker.symbol) {
+                    return action.updateTicker;
+                } else {
+                    return ticker;
+                }
+            });
+
+            return {
+                loggedIn: state.loggedIn,
+                userTickers: newTickers
+            };
+
+        case 'REMOVE_TICKER':
+
+            var newTickers = state.userTickers.filter(function (ticker) {
+                return ticker.symbol !== action.symbol;
+            });
+
+            return {
+                loggedIn: state.loggedIn,
+                userTickers: newTickers
+            };
+
+        default:
+            return state;
+    }
+});
+
+ReactDOM.render(React.createElement(
+    Provider,
+    { store: store },
+    React.createElement(CWrapper, null)
+), document.getElementById('stock-app'));

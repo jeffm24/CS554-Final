@@ -1,9 +1,9 @@
 const LoginForm = React.createClass({
     getInitialState() {
-        return {loginInfo: {}, registerInfo: {}, activeView: 'login'};
+        return {activeView: 'login'};
     },
     resetState() {
-        this.setState({loginInfo: {}, registerInfo: {}, activeView: 'login'});
+        this.setState({activeView: 'login'});
     },
     submitRegisterForm(e) {
         e.preventDefault();
@@ -14,9 +14,9 @@ const LoginForm = React.createClass({
             url: '/register',
             type: 'POST',
             data: {
-                username: this.state.registerInfo.username,
-                password: this.state.registerInfo.password,
-                confirm: this.state.registerInfo.confirmPassword
+                username: $('#register-username').val(),
+                password: $('#register-password').val(),
+                confirm: $('#register-confirm-password').val()
             },
             success: function(data) {
                 swal({
@@ -43,15 +43,19 @@ const LoginForm = React.createClass({
     submitLoginForm(e) {
         e.preventDefault();
 
+        var self = this;
+
         $.ajax({
             url: '/signin',
             type: 'POST',
             data: {
-                username: this.state.loginInfo.username,
-                password: this.state.loginInfo.password
+                username: $('#login-username').val(),
+                password: $('#login-password').val()
             }
         }).done((data) => {
-            this.props.loginFunc();
+            
+            self.props.dispatch({type: 'SET_LOGIN', loginState: true});
+
         }).fail((xhr, status, error) => {
             swal({
                 title: "Error!",
@@ -62,23 +66,6 @@ const LoginForm = React.createClass({
         });
 
         this.resetState();
-    },
-    changeLoginInfo(e) {
-        var newLoginInfo = {
-            username: $('#login-username').val(),
-            password: $('#login-password').val()
-        };
-
-        this.setState({loginInfo: newLoginInfo});
-    },
-    changeRegisterInfo(e) {
-        var newRegisterInfo = {
-            username: $('#register-username').val(),
-            password: $('#register-password').val(),
-            confirmPassword: $('#register-confirm-password').val()
-        };
-
-        this.setState({registerInfo: newRegisterInfo});
     },
     isViewActive(view) {
         return (this.state.activeView === view) ? 'active' : '';
@@ -110,81 +97,68 @@ const LoginForm = React.createClass({
                                 <div className="col-lg-12">
                                     <form id="login-form" className={this.isFormHidden('login')} onSubmit={this.submitLoginForm}>
                                         <div className="form-group">
-                                            <label className="hidden" for="login-username">Username</label>
+                                            <label className="hidden" htmlFor="login-username">Username</label>
                                             <input 
                                                 type="text" 
                                                 name="login-username" 
                                                 id="login-username" 
-                                                tabindex="1" 
+                                                tabIndex="1" 
                                                 className="form-control" 
-                                                placeholder="Username" 
-                                                onChange={this.changeLoginInfo}
-                                                value={this.state.loginInfo.username} />
+                                                placeholder="Username" />
                                         </div>
                                         <div className="form-group">
-                                            <label className="hidden" for="login-password">Password</label>
+                                            <label className="hidden" htmlFor="login-password">Password</label>
                                             <input 
                                                 type="password" 
                                                 name="login-password" 
                                                 id="login-password" 
-                                                tabindex="2" 
+                                                tabIndex="2" 
                                                 className="form-control" 
-                                                placeholder="Password"
-                                                onChange={this.changeLoginInfo}
-                                                value={this.state.loginInfo.password} />
+                                                placeholder="Password" />
                                         </div>
                                         <div className="form-group">
                                             <div className="row">
                                                 <div className="col-sm-6 col-sm-offset-3">
-                                                    <input type="submit" name="login-submit" id="login-submit" tabindex="4" className="form-control btn btn-primary" value="Log In" />
+                                                    <input type="submit" name="login-submit" id="login-submit" tabIndex="4" className="form-control btn btn-primary" value="Log In" />
                                                 </div>
                                             </div>
                                         </div>
                                     </form>
                                     <form id="register-form" className={this.isFormHidden('register')} onSubmit={this.submitRegisterForm}>
                                         <div className="form-group">
-                                            <label className="hidden" for="register-username">Username</label>
+                                            <label className="hidden" htmlFor="register-username">Username</label>
                                             <input 
                                                 type="text" 
                                                 name="register-username" 
                                                 id="register-username" 
-                                                tabindex="1" 
+                                                tabIndex="1" 
                                                 className="form-control" 
-                                                placeholder="Username" 
-                                                onChange={this.changeRegisterInfo}
-                                                value={this.state.registerInfo.username} />
+                                                placeholder="Username" />
                                         </div>
                                         <div className="form-group">
-                                            <label className="hidden" for="register-password">Password</label>
+                                            <label className="hidden" htmlFor="register-password">Password</label>
                                             <input 
                                                 type="password" 
                                                 name="register-password" 
                                                 id="register-password" 
-                                                tabindex="2" 
+                                                tabIndex="2" 
                                                 className="form-control" 
-                                                placeholder="Password"
-                                                onChange={this.changeRegisterInfo}
-                                                value={this.state.registerInfo.password} />
+                                                placeholder="Password" />
                                         </div>
                                         <div className="form-group">
-                                            <label className="hidden" for="register-confirm-password">Confirm Password</label>
+                                            <label className="hidden" htmlFor="register-confirm-password">Confirm Password</label>
                                             <input 
                                                 type="password" 
                                                 name="register-confirm-password" 
                                                 id="register-confirm-password" 
-                                                tabindex="2" 
+                                                tabIndex="2" 
                                                 className="form-control" 
-                                                placeholder="Confirm Password"
-                                                onChange={this.changeRegisterInfo}
-                                                value={this.state.registerInfo.confirmPassword} />
-                                        </div>
-                                        <div className="form-group">
-                                            <div className="g-recaptcha" data-sitekey="6LfHNh8TAAAAAJeYQyoVxYu9o1iL3o1Lvm3e4SUh" style={{'transform': 'scale(0.77)', '-webkit-transform': 'scale(0.77)', 'transform-origin': '0 0', '-webkit-transform-origin': '0 0'}}></div>
+                                                placeholder="Confirm Password" />
                                         </div>
                                         <div className="form-group">
                                             <div className="row">
                                                 <div className="col-sm-6 col-sm-offset-3">
-                                                    <input type="submit" name="register-submit" id="register-submit" tabindex="4" className="form-control btn btn-primary" value="Register" />
+                                                    <input type="submit" name="register-submit" id="register-submit" tabIndex="4" className="form-control btn btn-primary" value="Register" />
                                                 </div>
                                             </div>
                                         </div>
@@ -198,3 +172,5 @@ const LoginForm = React.createClass({
         );
     }
 });
+
+const CLoginForm = connect(state => state)(LoginForm);
