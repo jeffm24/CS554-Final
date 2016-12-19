@@ -466,7 +466,6 @@ var Search = React.createClass({
                         confirmButtonText: "OK"
                     });
                 } else {
-
                     self.setState({ searchTicker: data.result });
                 }
             },
@@ -538,7 +537,10 @@ var Search = React.createClass({
 var Ticker = React.createClass({
     displayName: 'Ticker',
     getInitialState: function getInitialState() {
-        return {};
+        return { tickerData: this.props.tickerData };
+    },
+    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+        this.setState({ tickerData: nextProps.tickerData });
     },
     saveTicker: function saveTicker() {
         if (this.props.saved) return;
@@ -549,7 +551,7 @@ var Ticker = React.createClass({
             url: '/saveTicker',
             type: 'POST',
             data: {
-                symbol: this.props.tickerData.symbol
+                symbol: this.state.tickerData.symbol
             },
             success: function success(data) {
                 self.props.dispatch({ type: 'ADD_TICKER', newTicker: self.props.tickerData });
@@ -573,7 +575,7 @@ var Ticker = React.createClass({
             url: '/removeTicker',
             type: 'DELETE',
             data: {
-                symbol: this.props.tickerData.symbol
+                symbol: this.state.tickerData.symbol
             },
             success: function success(data) {
                 self.props.dispatch({ type: 'REMOVE_TICKER', symbol: self.props.tickerData.symbol });
@@ -596,23 +598,23 @@ var Ticker = React.createClass({
 
             tickerContent = React.createElement(
                 'div',
-                { id: "panel-" + this.props.tickerData.symbol, className: "panel panel-default tickerItem savedTickerItem " + this.props.tickerData.change, 'data-symbol': this.props.tickerData.symbol },
+                { id: "panel-" + this.state.tickerData.symbol, className: "panel panel-default tickerItem savedTickerItem " + this.state.tickerData.change, 'data-symbol': this.state.tickerData.symbol },
                 React.createElement(
                     'a',
-                    { 'data-toggle': 'collapse', 'data-parent': '#accordion', href: "#collapse" + this.props.tickerData.symbol },
+                    { 'data-toggle': 'collapse', 'data-parent': '#accordion', href: "#collapse" + this.state.tickerData.symbol },
                     React.createElement(
                         'div',
                         { className: 'panel-heading' },
                         React.createElement(
                             'h3',
                             { className: 'panel-title' },
-                            this.props.tickerData.symbol,
+                            this.state.tickerData.symbol,
                             ' ',
                             React.createElement(
                                 'span',
-                                { className: "change-percent " + this.props.tickerData.change },
+                                { className: "change-percent " + this.state.tickerData.change },
                                 '(',
-                                this.props.tickerData.ChangeinPercent,
+                                this.state.tickerData.ChangeinPercent,
                                 ')'
                             )
                         )
@@ -620,7 +622,7 @@ var Ticker = React.createClass({
                 ),
                 React.createElement(
                     'div',
-                    { id: "collapse" + this.props.tickerData.symbol, className: "panel-collapse collapse " + this.props.tickerData.change },
+                    { id: "collapse" + this.state.tickerData.symbol, className: "panel-collapse collapse " + this.state.tickerData.change },
                     React.createElement(
                         'div',
                         { className: 'panel-body' },
@@ -632,14 +634,14 @@ var Ticker = React.createClass({
                                 { className: 'col-xs-12 col-sm-6' },
                                 React.createElement(CTickerGraph, {
                                     saved: 'true',
-                                    tickerData: this.props.tickerData })
+                                    tickerData: this.state.tickerData })
                             ),
                             React.createElement(
                                 'div',
                                 { className: 'col-xs-12 col-sm-6' },
                                 React.createElement(CTickerStats, {
                                     saved: 'true',
-                                    tickerData: this.props.tickerData })
+                                    tickerData: this.state.tickerData })
                             )
                         ),
                         React.createElement(
@@ -670,7 +672,7 @@ var Ticker = React.createClass({
                         'label',
                         { className: 'hidden', htmlFor: 'saveTickerBtn' },
                         ' Add ',
-                        this.props.tickerData.symbol,
+                        this.state.tickerData.symbol,
                         ' to Portfolio  '
                     ),
                     React.createElement(
@@ -684,20 +686,20 @@ var Ticker = React.createClass({
 
             tickerContent = React.createElement(
                 'div',
-                { id: 'panel-search', className: "panel panel-default tickerItem " + this.props.tickerData.change },
+                { id: 'panel-search', className: "panel panel-default tickerItem " + this.state.tickerData.change },
                 React.createElement(
                     'div',
                     { className: 'panel-heading' },
                     React.createElement(
                         'h3',
                         { className: 'panel-title' },
-                        this.props.tickerData.symbol,
+                        this.state.tickerData.symbol,
                         ' ',
                         React.createElement(
                             'span',
-                            { className: "change-percent " + this.props.tickerData.change },
+                            { className: "change-percent " + this.state.tickerData.change },
                             '(',
-                            this.props.tickerData.ChangeinPercent,
+                            this.state.tickerData.ChangeinPercent,
                             ')'
                         )
                     ),
@@ -713,13 +715,13 @@ var Ticker = React.createClass({
                             'div',
                             { className: 'col-xs-12 col-sm-6' },
                             React.createElement(CTickerGraph, {
-                                tickerData: this.props.tickerData })
+                                tickerData: this.state.tickerData })
                         ),
                         React.createElement(
                             'div',
                             { className: 'col-xs-12 col-sm-6' },
                             React.createElement(CTickerStats, {
-                                tickerData: this.props.tickerData })
+                                tickerData: this.state.tickerData })
                         )
                     )
                 )
@@ -753,7 +755,12 @@ $(document).on('shown.bs.collapse', '.panel', function (e) {
 var TickerGraph = React.createClass({
     displayName: 'TickerGraph',
     getInitialState: function getInitialState() {
-        return { tickerData: this.props.tickerData, activePeriod: '1W' };
+        return { tickerData: this.props.tickerData, activePeriod: '1W', initialLoad: true };
+    },
+    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+        this.setState({ tickerData: nextProps.tickerData }, function () {
+            this.setDataPeriod(this.state.activePeriod);
+        });
     },
     makeGraph: function makeGraph() {
         var symbol = this.state.tickerData.symbol;
@@ -842,7 +849,7 @@ var TickerGraph = React.createClass({
         var ret = (ubique.mean(ubique.tick2ret(values.reverse())) * 100).toFixed(4);
         var varc = (ubique.varc(ubique.tick2ret(values.reverse())) * 100).toFixed(4);
 
-        this.setState({ currentPrice: parseFloat(data[0].Open).toLocaleString('en-US', { style: 'currency', currency: 'USD' }) });
+        this.setState({ currentPrice: parseFloat(data[0].Open).toLocaleString('en-US', { style: 'currency', currency: 'USD' }), initialLoad: false });
 
         $('#return' + searchTag + '-' + symbol).text(ret + "%");
         $('#variance' + searchTag + '-' + symbol).text(varc + "%");
@@ -1033,6 +1040,9 @@ var TickerStats = React.createClass({
     displayName: 'TickerStats',
     getInitialState: function getInitialState() {
         return { refreshRunning: false, tickerData: this.props.tickerData };
+    },
+    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+        this.setState({ tickerData: nextProps.tickerData });
     },
     refreshTickerStats: function refreshTickerStats() {
         this.setState({ refreshRunning: true });

@@ -16,7 +16,12 @@ $(document).on('shown.bs.collapse', '.panel', function (e) {
 
 const TickerGraph = React.createClass({
     getInitialState () {
-        return {tickerData: this.props.tickerData, activePeriod: '1W'};
+        return {tickerData: this.props.tickerData, activePeriod: '1W', initialLoad: true};
+    },
+    componentWillReceiveProps(nextProps) {
+        this.setState({ tickerData: nextProps.tickerData }, function() {
+            this.setDataPeriod(this.state.activePeriod);
+        });
     },
     makeGraph() {
         var symbol = this.state.tickerData.symbol;
@@ -112,7 +117,7 @@ const TickerGraph = React.createClass({
         var ret = (ubique.mean(ubique.tick2ret(values.reverse())) * 100).toFixed(4);
         var varc = (ubique.varc(ubique.tick2ret(values.reverse())) * 100).toFixed(4);
 
-        this.setState({ currentPrice: parseFloat(data[0].Open).toLocaleString('en-US', { style: 'currency', currency: 'USD' }) });
+        this.setState({ currentPrice: parseFloat(data[0].Open).toLocaleString('en-US', { style: 'currency', currency: 'USD' }), initialLoad: false });
 
         $('#return' + searchTag + '-' + symbol).text(ret + "%");
         $('#variance' + searchTag + '-' + symbol).text(varc + "%");
@@ -162,8 +167,10 @@ const TickerGraph = React.createClass({
         }
 
         return (
-            <div className = "sub-panel graph-panel text-center">
-                <div className = "text-center price">{this.state.currentPrice}</div>
+            <div className="sub-panel graph-panel text-center">                
+                
+                <div className ="text-center price">{this.state.currentPrice}</div>
+
                 <div className="d3-wrapper" id={"d3" + searchIdLong + "-" + this.state.tickerData.symbol} data-symbol = {this.state.tickerData.symbol}></div>
 
                 <div className = {"buttons btn-group " + searchBtnsClass} id={"buttons-" + this.state.tickerData.symbol}>

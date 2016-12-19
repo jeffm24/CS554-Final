@@ -2,6 +2,9 @@ const TickerStats = React.createClass({
     getInitialState () {
         return {refreshRunning: false, tickerData: this.props.tickerData};
     },
+    componentWillReceiveProps(nextProps) {
+        this.setState({ tickerData: nextProps.tickerData });
+    },
     refreshTickerStats () {
         this.setState({refreshRunning: true});
         this.updateTicker($(this).data('symbol'), true);

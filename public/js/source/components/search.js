@@ -52,7 +52,6 @@ const Search = React.createClass({
                     });
 
                 } else {
-
                     self.setState({searchTicker: data.result});
                 }
             },
