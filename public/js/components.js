@@ -791,7 +791,8 @@ var TickerGraph = React.createClass({
             data: JSON.stringify({
                 ticker: this.state.tickerData.symbol,
                 start: start,
-                end: end
+                end: end,
+                period: this.state.activePeriod
             })
         }).then(function (data) {
             self.drawGraph(data.result);
@@ -855,8 +856,6 @@ var TickerGraph = React.createClass({
         $('#variance' + searchTag + '-' + symbol).text(varc + "%");
     },
     setDataPeriod: function setDataPeriod(newPeriod) {
-        this.setState({ activePeriod: newPeriod });
-
         var stock = this.state.tickerData.symbol;
         var end = new Date();
         var start = new Date();
@@ -879,7 +878,9 @@ var TickerGraph = React.createClass({
         start = start.toISOString().split('T')[0];
         end = end.toISOString().split('T')[0];
 
-        this.updateGraph(start, end);
+        this.setState({ activePeriod: newPeriod }, function () {
+            this.updateGraph(start, end);
+        });
     },
     isActivePeriod: function isActivePeriod(period) {
         return this.state.activePeriod === period ? 'active' : '';
