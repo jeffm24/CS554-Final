@@ -1,5 +1,6 @@
 const httpRequest = require('request');
 const fs = require('fs');
+var cache = require('express-redis-cache')();
 
 const data = require('../data');
 const userData = data.userData;
@@ -244,6 +245,8 @@ const constructorMethod = (app) => {
         // console.log(request.body.start);
         // console.log(request.body.end);
 
+        cache.route(request.body.ticker, 60000);
+
         historicalData.checkDates(request.body.ticker,request.body.start,request.body.end).then(function(result) {
 
             if(result === null){
@@ -344,6 +347,7 @@ const constructorMethod = (app) => {
     // update ticker route (for forced update with database check)
     app.put("/updateTicker", function(request, response) {
 
+        cache.route(request.body.symbol, 60000);
         httpRequest('https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22' + request.body.symbol + '%22)%0A%09%09&format=json&env=http%3A%2F%2Fdatatables.org%2Falltables.env&callback=', function (error, data, body) {
             if (!error && data.statusCode == 200) {
 
