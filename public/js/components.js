@@ -1307,7 +1307,7 @@ var CTickerStats = connect(function (state) {
 var Wrapper = React.createClass({
     displayName: 'Wrapper',
     getInitialState: function getInitialState() {
-        return {};
+        return { loading: true };
     },
     componentDidMount: function componentDidMount() {
         var self = this;
@@ -1317,15 +1317,19 @@ var Wrapper = React.createClass({
             type: 'GET'
         }).done(function (data) {
             self.props.dispatch({ type: 'SET_LOGIN', loginState: data.loggedIn });
+            self.setState({ loading: false });
         });
     },
     render: function render() {
         var mainComponent = null;
 
-        if (this.props.loggedIn) {
-            mainComponent = React.createElement(CProfile, null);
-        } else {
-            mainComponent = React.createElement(CLoginForm, null);
+        if (!this.state.loading) {
+
+            if (this.props.loggedIn) {
+                mainComponent = React.createElement(CProfile, null);
+            } else {
+                mainComponent = React.createElement(CLoginForm, null);
+            }
         }
 
         return React.createElement(

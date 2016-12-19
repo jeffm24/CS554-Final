@@ -1,6 +1,6 @@
 const Wrapper = React.createClass({
     getInitialState() {
-        return {};
+        return {loading: true};
     },
     componentDidMount() {
         var self = this;
@@ -10,15 +10,20 @@ const Wrapper = React.createClass({
             type: 'GET'
         }).done((data) => {
             self.props.dispatch({type: 'SET_LOGIN', loginState: data.loggedIn});   
+            self.setState({loading: false});
         });
     },
     render() {
         let mainComponent = null;
 
-        if (this.props.loggedIn){
-            mainComponent = <CProfile />
-        } else {
-            mainComponent = <CLoginForm />
+        if (!this.state.loading) {
+
+            if (this.props.loggedIn) {
+                mainComponent = <CProfile />
+            } else {
+                mainComponent = <CLoginForm />
+            }
+
         }
 
         return (
