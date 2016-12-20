@@ -110,15 +110,72 @@ describe('User tests', () => {
                     })
                 })
             })
+            let ticker = 'MMM'
             describe('> save a ticker for the user', () => {
-                it('should return the saved tickers for the user', (done) => {
-                    userData.saveTicker(userInfo._id, 'MMM').then((tickerList) => {
-                        if(tickerList){
-                            console.log(tickerList);
+                it('should return the saved tickers for the user, including the new ticker', (done) => {
+                    userData.saveTicker(userInfo._id, ticker).then((tickerList) => {
+                        if(tickerList.indexOf(ticker) >= 0){
                             done();
                         }else{
                             done(new Error("Ticker list not returned properly"));
                         }
+                    }).catch((err) => {
+                        done(new Error(err));
+                    })
+                })
+                it('should reject on bad user ID', (done) => {
+                    userData.saveTicker('bad-id', ticker).then((tickerList) => {
+                        done(new Error('Ticker accepted with bad user ID'));
+                    }).catch((err) => {
+                        done();
+                    })
+                })
+            })
+            describe('> delete a ticker for the user', () => {
+                it('should return the saved tickers for the user, without the given ticker', (done) => {
+                    userData.deleteTicker(userInfo._id, ticker).then((tickerList) => {
+                        if(tickerList.indexOf(ticker) >= 0){
+                            done(new Error('Ticker not properly removed'));
+                        }else{
+                            done();
+                        }
+                    }).catch((err) => {
+                        done(new Error(err));
+                    })
+                })
+                it('should reject on bad user ID', (done) => {
+                    userData.deleteTicker('bad-id', ticker).then((tickerList) => {
+                        done(new Error('Ticker removed for bad user ID'));
+                    }).catch((err) => {
+                        done();
+                    })
+                })
+            })
+            describe('> log out', () => {
+                it('should return true for valid login user ID', (done) => {
+                    userData.logOut(null).then((resp) => {
+                        if(resp){
+                            done(new Error('Log out returned true for bad ID'));
+                        }else{
+                            done();
+                        }
+                    }).catch((err) => {
+                        if(err == 'Invalid argument(s).'){
+                            done();
+                        }else{
+                            done(new Error(err));
+                        }
+                    })
+                })
+                it('should return true for valid login user ID', (done) => {
+                    userData.logOut(userInfo._id).then((resp) => {
+                        if(resp==true){
+                            done();
+                        }else{
+                            done(new Error('Bad return value'))
+                        }
+                    }).catch((err) => {
+                        done(new Error(err));
                     })
                 })
             })
