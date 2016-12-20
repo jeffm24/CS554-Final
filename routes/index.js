@@ -22,6 +22,29 @@ const constructorMethod = (app) => {
         });
     });
 
+    //log info to console
+    /*
+    let incoming = true;
+    app.use((req, res, next) => {
+        let info = {};
+        info.req = {};
+        info.req.body = req.body;
+        info.req.cookies = req.cookies;
+        info.req.files = req.files;
+        info.req.headers = req.headers;
+        info.req.params = req.params;
+        info.req.query = req.query;
+        info.req.route = req.route;
+        info.req.method = req.method;
+        info.req.url = req.url;
+        info.res = {};
+        info.res.locals = res.locals;
+        console.log("---");
+        console.log(info);
+        next();
+    });
+    */
+
     app.get('/', function(request, response) {
         response.render('home', {});
     });

@@ -4,7 +4,8 @@
   "description": "A small demo electron application",
   "main": "main.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "mocha && node app.js",
+    "test": "mocha"
   },
   "productName": "CS-554",
   "repository": {
@@ -33,6 +34,7 @@
     "gulp-concat": "^2.6.0",
     "gulp-sass": "^2.3.2",
     "gulp-sourcemaps": "^1.6.0",
+    "mocha": "^3.2.0",
     "uglifyify": "^3.0.4",
     "vinyl-source-stream": "^1.1.0"
   },
