@@ -15,31 +15,34 @@ MongoClient.connect(fullMongoUrl)
     .then(function(db) {
         var tickerCollection = db.collection("historicalData");
 
-        exports.checkDates = function(symbol,start,end) {
+        exports.latestDate = function(symbol) {
             // Try to find ticker in the database
-            //symbol = "AAPL";
-            //start = 10201;
-            return tickerCollection.find({Symbol: symbol}).sort({Date: -1}).toArray().then(function(ticker) {
-              //console.log(ticker);
-                if (ticker.length) {
-                  var lastDate = ticker[0].Date;
-                  return lastDate;
+            return tickerCollection.find({Symbol: symbol}).sort({Date: -1}).limit(1).toArray().then(function(tickerData) {
+                
+                if (tickerData.length) {
+                    return tickerData[0].Date;
                 } else {
                     return null;
                 }
             });
         };
 
-        exports.addTicker = function(symbol, data){
-          return tickerCollection.insertMany(data).then(function() {
-              return tickerCollection.find().toArray();
-          });
+        exports.addTicker = function(symbol, data) {
+            // Map dates so that they are actual date objects
+            data.map(function(ticker) {
+                ticker.Date = new Date(ticker.Date);
+                ticker.Date.setDate(ticker.Date.getDate() + 1);
+
+                return ticker;
+            });
+
+            return tickerCollection.insertMany(data).then(function() {
+                return tickerCollection.find().toArray();
+            });
         };
         
-        exports.getData = function(symbol, start, end){
-          return tickerCollection.find({Symbol: symbol, Date: {$gte: start, $lte: end}}).toArray().then(function(data){
-            return data;
-          });
+        exports.getData = function(symbol, start, end) {
+            return tickerCollection.find({Symbol: symbol, Date: {$gte: start, $lte: end}}).sort({Date: 1}).toArray();
         };
 
     });

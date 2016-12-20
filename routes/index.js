@@ -277,23 +277,27 @@ const constructorMethod = (app) => {
         cache.route({ expire: 60000 }),
         function(request, response) {
 
-            historicalData.checkDates(request.body.ticker,request.body.start,request.body.end).then(function(result) {
+            request.body.start = new Date(request.body.start);
+            request.body.end = new Date(request.body.end); 
 
-                if(result === null){
+            historicalData.latestDate(request.body.ticker).then(function(result) {
+
+                if (result === null) {
+
                     //console.log("TICKER NOT FOUND");
                     var end = new Date();
                     var start = new Date();
-                    start.setFullYear(end.getFullYear()-1);
+                    start.setFullYear(end.getFullYear() - 1);
                     start = start.toISOString().split('T')[0];
                     end = end.toISOString().split('T')[0];
 
                     var inputURL = "http://query.yahooapis.com/v1/public/yql"+
                                 "?q=select%20*%20from%20yahoo.finance.historicaldata%20"+
                                 "where%20symbol%20%3D%20%22"
-                                +request.body.ticker+"%22%20and%20startDate%20%3D%20%22"
-                                +start+"%22%20and%20endDate%20%3D%20%22"
-                                +end+"%22&format=json&env=store%3A%2F%2F"
-                                +"datatables.org%2Falltableswithkeys";
+                                + request.body.ticker + "%22%20and%20startDate%20%3D%20%22"
+                                + start + "%22%20and%20endDate%20%3D%20%22"
+                                + end + "%22&format=json&env=store%3A%2F%2F"
+                                + "datatables.org%2Falltableswithkeys";
 
                     httpRequest(inputURL, function (error, data, body) {
 
@@ -303,71 +307,76 @@ const constructorMethod = (app) => {
                             var info = query.results.quote;
                             // Check to see if actual data was recieved
                             if (info) {
-                            // Update the ticker in the database with the results from the Yahoo query
-                                historicalData.addTicker(request.body.ticker,info).then(function() {
-                                return  historicalData.getData(request.body.ticker,request.body.start,request.body.end)
+                                // Update the ticker in the database with the results from the Yahoo query
+                                historicalData.addTicker(request.body.ticker, info).then(function() {
+                                    return historicalData.getData(request.body.ticker, request.body.start, request.body.end);
                                 }).then(function(data) {
                                     //console.log(data);
                                     response.json({result: data});
-                                    });
+                                });
                             } else {
                                 response.json({result: "Query returned no results.", notFound: true});
                             }
-                            } else {
-                                response.status(500).json({error: error});
-                            }
-                    });
-            }
-
-            else if(result == request.body.end){
-                //console.log("TICKER UP TO DATE");
-                historicalData.getData(request.body.ticker,request.body.start,request.body.end).then(function(data) {
-                    response.json({result: data});
-                    });
-            }
-            else {
-                var end = new Date();
-                var start = new Date(result);
-                start.setDate(start.getDate() + 1);
-                start = start.toISOString().split('T')[0];
-                end = end.toISOString().split('T')[0];
-                //console.log("TICKER NEEDS UPDATING FROM " + start + " to " + request.body.end);
-                var inputURL = "http://query.yahooapis.com/v1/public/yql"+
-                                "?q=select%20*%20from%20yahoo.finance.historicaldata%20"+
-                                "where%20symbol%20%3D%20%22"
-                                +request.body.ticker+"%22%20and%20startDate%20%3D%20%22"
-                                +start+"%22%20and%20endDate%20%3D%20%22"
-                                +end+"%22&format=json&env=store%3A%2F%2F"
-                                +"datatables.org%2Falltableswithkeys";
-
-                httpRequest(inputURL, function (error, data, body) {
-
-                    if (!error && data.statusCode == 200) {
-
-                        var query = JSON.parse(body).query;
-
-                        //console.log(info);
-                        // Update the ticker in the database with the results from the Yahoo query
-                        if(query.results){
-                            var info = query.results.quote;
-                            historicalData.addTicker(request.body.ticker,info).then(function() {
-                            return  historicalData.getData(request.body.ticker,request.body.start,request.body.end)
-                            }).then(function(data) {
-                                //console.log(data);
-                                response.json({result: data});
-                                });
                         } else {
-                            historicalData.getData(request.body.ticker,request.body.start,request.body.end).then(function(data) {
-                                //console.log(data);
-                                response.json({result: data});
-                            });
-                        }
-
-                    } else {
                             response.status(500).json({error: error});
                         }
-                });
-            }
+                    });
+                        
+                } else if (result.getDate() === request.body.end.getDate() && result.getMonth() === request.body.end.getMonth() && result.getYear() === request.body.end.getYear()) {
+                    
+                    //console.log("TICKER UP TO DATE");
+                    historicalData.getData(request.body.ticker, request.body.start, request.body.end).then(function(data) {
+                        response.json({result: data});
+                    });
+
+                } else {
+
+                    var end = new Date();
+                    var start = result;
+                    start = start.toISOString().split('T')[0];
+                    end = end.toISOString().split('T')[0];
+
+                    //console.log("TICKER NEEDS UPDATING FROM " + start + " to " + request.body.end);
+                    var inputURL = "http://query.yahooapis.com/v1/public/yql"+
+                                    "?q=select%20*%20from%20yahoo.finance.historicaldata%20"+
+                                    "where%20symbol%20%3D%20%22"
+                                    + request.body.ticker + "%22%20and%20startDate%20%3D%20%22"
+                                    + start + "%22%20and%20endDate%20%3D%20%22"
+                                    + end + "%22&format=json&env=store%3A%2F%2F"
+                                    + "datatables.org%2Falltableswithkeys";
+
+                    httpRequest(inputURL, function (error, data, body) {
+
+                        if (!error && data.statusCode == 200) {
+
+                            var query = JSON.parse(body).query;
+
+                            // console.log(info);
+                            // Update the ticker in the database with the results from the Yahoo query
+                            if (query.results) {
+
+                                var info = query.results.quote;
+
+                                historicalData.addTicker(request.body.ticker, info).then(function() {
+                                    return historicalData.getData(request.body.ticker, request.body.start, request.body.end)
+                                }).then(function(data) {
+                                    //console.log(data);
+                                    response.json({result: data});
+                                });
+
+                            } else {
+
+                                historicalData.getData(request.body.ticker, request.body.start, request.body.end).then(function(data) {
+                                    //console.log(data);
+                                    response.json({result: data});
+                                });
+                            }
+
+                        } else {
+                            response.status(500).json({error: error});
+                        }
+                    });
+                }
 
             }, function(errorMessage) {
                 response.json({result: errorMessage, notFound: true});

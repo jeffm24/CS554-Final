@@ -822,14 +822,10 @@ var TickerGraph = React.createClass({
         });
 
         data.forEach(function (d) {
-            d.date = parseDate(d.Date);
+            d.date = new Date(d.Date); //parseDate(d.Date);
             d.high = +d.High;
             d.low = +d.Low;
             values.push(d.Open);
-        });
-
-        data.sort(function (a, b) {
-            return b.date - a.date;
         });
 
         x.domain(d3.extent(data, function (d) {
@@ -875,8 +871,8 @@ var TickerGraph = React.createClass({
                 break;
         }
 
-        start = start.toISOString().split('T')[0];
-        end = end.toISOString().split('T')[0];
+        //start = start.toISOString().split('T')[0];
+        //end = end.toISOString().split('T')[0];
 
         this.setState({ activePeriod: newPeriod }, function () {
             this.updateGraph(start, end);
